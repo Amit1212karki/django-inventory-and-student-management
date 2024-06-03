@@ -7,38 +7,17 @@ class SubscriptionInline(admin.TabularInline):
     extra = 1  # Number of empty forms to display
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'phone','company', 'created_at', 'updated_at')
+    list_display = ('id', 'first_name', 'email', 'phone','company', 'customer_type', 'created_at')
     inlines = [SubscriptionInline]
 
-class PurchaseDetailInlineForm(forms.ModelForm):
-    class Meta:
-        model = PurchaseDetail
-        fields = ['product', 'quantity', 'price']
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if 'product' in self.fields:
-            self.fields['product'].widget.can_add_related = False  # Disable the add button for related products
-            self.fields['product'].widget.can_change_related = False  # Disable the change link for related products
 
-class PurchaseDetailInline(admin.TabularInline):
-    model = PurchaseDetail
-    form = PurchaseDetailInlineForm
-    extra = 1  # Number of empty forms to display
+class SalesDetailInline(admin.TabularInline):
+    model = SalesDetail
+    extra = 1
 
-
-class PurchaseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'purchase_date', 'status', 'created_at', 'updated_at')
-    inlines = [PurchaseDetailInline]
-
-    def save_formset(self, request, form, formset, change):
-        instances = formset.save(commit=False)
-        for instance in instances:
-            if not instance.pk:
-                # Calculate price for new instances
-                instance.price = instance.product.price * instance.quantity
-            instance.save()
-        formset.save_m2m()
+class SalesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'sales_date', 'status', 'created_at', 'updated_at')
+    inlines = [SalesDetailInline]
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'product', 'start_date', 'end_date', 'is_active', 'created_at', 'updated_at')
@@ -47,5 +26,5 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Customer, CustomerAdmin)
-admin.site.register(Purchase, PurchaseAdmin)
-admin.site.register(PurchaseDetail)
+admin.site.register(Sales, SalesAdmin)
+admin.site.register(SalesDetail)
