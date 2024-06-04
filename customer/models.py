@@ -7,6 +7,7 @@ class Customer(models.Model):
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='customers')
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    profile_image = models.ImageField(upload_to='profile_images/')
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField()
     gender_choices = [
@@ -23,6 +24,9 @@ class Customer(models.Model):
         ('client', 'Client')
     ]
     customer_type = models.CharField(max_length=10, choices=customer_type_choices)
+    parents_name = models.CharField(max_length=100)
+    parents_phone_no = models.CharField(max_length=15, blank=True, null=True)
+    ligal_document = models.FileField(upload_to='ligal_document/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

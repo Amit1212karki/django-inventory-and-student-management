@@ -7,7 +7,7 @@ class SubscriptionInline(admin.TabularInline):
     extra = 1  # Number of empty forms to display
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'email', 'phone','company', 'customer_type', 'created_at')
+    list_display = ('id', 'first_name', 'email', 'phone','company',  'customer_type', 'created_at')
     inlines = [SubscriptionInline]
 
 
