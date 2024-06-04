@@ -7,6 +7,7 @@ class Customer(models.Model):
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='customers')
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    profile_image = models.ImageField(upload_to='profile_images/')
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField()
     gender_choices = [
