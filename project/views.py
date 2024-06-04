@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
 
 def index(request):
     if request.method == 'POST':
@@ -15,6 +17,6 @@ def index(request):
             return render(request, 'auth/login.html', {'error_message': error_message})
     else:
         return render(request, 'auth/login.html')
-
+@login_required
 def dashboard(request):
     return render(request,'dashboard/pages/index.html')
