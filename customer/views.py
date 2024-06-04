@@ -79,6 +79,8 @@ def updateStudent(request, id):
         updateStudent.address = request.POST.get('address')
         updateStudent.parents_name = request.POST.get('parents_name')
         updateStudent.parents_phone_no = request.POST.get('parents_phone')
+        if request.FILES.get('ligal_document'):
+            updateStudent.ligal_document = request.FILES.get('profile_image')
         updateStudent.ligal_document = request.FILES.get('ligal_document')
 
 
