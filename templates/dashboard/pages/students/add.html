@@ -29,7 +29,7 @@
             </div>
             <div>
                 <label for="profile_image" class="block text-sm font-medium text-gray-700">Profile Image</label>
-                <input type="file" name="profile_image" id="profile_image" required
+                <input type="file" name="profile_image" id="profile_image" 
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'profile_image' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.profile_image }}</p>
@@ -45,7 +45,7 @@
             </div>
             <div>
                 <label for="date-of-birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" name="date_of_birth" id="date-of-birth" required
+                <input type="date" name="date_of_birth" id="date-of-birth" 
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'date_of_birth' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.date_of_birth }}</p>
@@ -99,7 +99,7 @@
             </div>
             <div>
                 <label for="ligal_document" class="block text-sm font-medium text-gray-700">Document</label>
-                <input type="file" name="ligal_document" id="ligal_document" required
+                <input type="file" name="ligal_document" id="ligal_document" 
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'ligal_document' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.ligal_document }}</p>
