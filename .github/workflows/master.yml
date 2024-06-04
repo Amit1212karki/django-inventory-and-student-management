@@ -11,12 +11,6 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
   
-      - name: create .env file
-        run: touch .env
-  
-      - name: copy .env.master to .env
-        run: cp .env.example .env
-  
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
