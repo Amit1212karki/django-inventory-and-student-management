@@ -46,7 +46,7 @@
             </div>
             <div>
                 <label for="date-of-birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" name="date_of_birth" value="{{ editStudent.date_of_birth|date:"Y-m-d" }}" id="date-of-birth" required
+                <input type="date" name="date_of_birth" value="{{ editStudent.date_of_birth|date:"Y-m-d" }}" id="date-of-birth" 
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'date_of_birth' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.date_of_birth }}</p>
