@@ -2,8 +2,8 @@ on:
     push:
       branches:
         - "master"
-  name: 🚀 Deploy website on push
-  jobs:
+name: 🚀 Deploy website on push
+jobs:
     web-deploy:
       name: 🎉 Deploy
       runs-on: ubuntu-latest
