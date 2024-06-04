@@ -1,0 +1,74 @@
+{% extends 'dashboard/layout/main.html' %}
+
+{% block title %}
+{{ block.super }} - Add Product
+{% endblock %}
+
+{% block content %}
+
+<div class="w-full bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-semibold mb-6">Create Product Record</h1>
+    <form action="#" method="POST" class="space-y-6">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label for="first-name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                <input type="text" name="first_name" id="first-name" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Product Price</label>
+                <input type="number" step="any" name="phone" id="phone" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="profile_image" class="block text-sm font-medium text-gray-700">Product Image</label>
+                <input type="file" name="profile_image" id="profile_image" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="profile_image" class="block text-sm font-medium text-gray-700">Product File</label>
+                <input type="file" name="profile_image" id="profile_image" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Inventory Count</label>
+                <input type="email" name="email" id="email" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="gender" class="block text-sm font-medium text-gray-700">Is Recurring</label>
+                <select name="gender" id="gender" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                    <option value="" disabled selected>Select option</option>
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+            <div>
+                <label for="gender" class="block text-sm font-medium text-gray-700">Recurring Period</label>
+                <select name="gender" id="gender" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                    <option value="" disabled selected>Select option</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="quartely">Quartely</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea name="address" id="address" rows="3" required
+                class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" ></textarea>
+        </div>
+        <div class="flex justify-end">
+            <button type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}
