@@ -21,22 +21,17 @@ def addStudent(request):
             workspace = Workspace.objects.get(pk=Workspace_id)
             first_name = request.POST.get('first_name')
             last_name = request.POST.get('last_name')
-            image = request.FILES.get('profile_image')
+            image = None if not request.FILES.get('profile_image') else request.FILES.get('profile_image')
             email = request.POST.get('email')
-            birth_date = request.POST.get('date_of_birth')
+            birth_date = None if not request.POST.get('date_of_birth') else request.POST.get('date_of_birth')
+            gender = request.POST.get('gender')
             gender = request.POST.get('gender')
             phone = request.POST.get('phone')
             address = request.POST.get('address') 
             parents_name = request.POST.get('parents_name')
             parents_phone = request.POST.get('parents_phone')  
-            document = request.FILES.get('ligal_document')
-            
+            document = None if not request.FILES.get('ligal_document') else request.FILES.get('ligal_document')
 
-            if not first_name or not last_name or not image or not email or not birth_date or not gender or not phone or not address or not parents_name or not parents_phone or not document:
-                messages.error(request, 'Please fill in all the required fields.')
-                return redirect('add-student')
-
-            
             new_student = Customer(
                 first_name=first_name,
                 last_name=last_name,
