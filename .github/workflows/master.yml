@@ -15,6 +15,6 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: 85.10.192.25
-          username: billing@billing.hunchhadigital.com
+          username: billings@billings.hunchhadigital.com.np
           password: Ultimate@22
   
