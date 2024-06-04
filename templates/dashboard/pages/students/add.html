@@ -80,6 +80,31 @@
                 <p class="text-red-500 text-sm">{{ form.errors.address }}</p>
                 {% endif %}
             </div>
+
+            <div>
+                <label for="parents_name" class="block text-sm font-medium text-gray-700">Parents Name</label>
+                <input name="parents_name" id="parents_name" rows="3" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                {% if 'parents_name' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.parents_name }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="parents phone" class="block text-sm font-medium text-gray-700">Parents Phone Number</label>
+                <input type="tel" name="parents_phone" id="parents_phone" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'parents_phone' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.parents_phone }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="ligal_document" class="block text-sm font-medium text-gray-700">Document</label>
+                <input type="file" name="ligal_document" id="ligal_document" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'ligal_document' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.ligal_document }}</p>
+                {% endif %}
+            </div>
         </div>
         <div class="flex justify-end">
             <button type="submit"

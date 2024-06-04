@@ -26,9 +26,13 @@ def addStudent(request):
             birth_date = request.POST.get('date_of_birth')
             gender = request.POST.get('gender')
             phone = request.POST.get('phone')
-            address = request.POST.get('address')   
+            address = request.POST.get('address') 
+            parents_name = request.POST.get('parents_name')
+            parents_phone = request.POST.get('parents_phone')  
+            document = request.FILES.get('ligal_document')
+            
 
-            if not first_name or not last_name or not image or not email or not birth_date or not gender or not phone or not address:
+            if not first_name or not last_name or not image or not email or not birth_date or not gender or not phone or not address or not parents_name or not parents_phone or not document:
                 messages.error(request, 'Please fill in all the required fields.')
                 return redirect('add-student')
 
@@ -43,11 +47,15 @@ def addStudent(request):
                 phone=phone,
                 address=address,
                 customer_type='student',
-                workspace=workspace
+                workspace=workspace,
+                parents_name=parents_name,
+                parents_phone_no=parents_phone,
+                ligal_document=document
             )
             new_student.save()
         except Exception as e:
            print(e)
+           messages.error(request, 'An error occurred while saving the student.')
         return redirect('student-index')
     return render(request,'dashboard/pages/students/add.html')
     
@@ -69,8 +77,13 @@ def updateStudent(request, id):
         updateStudent.gender = request.POST.get('gender')
         updateStudent.phone = request.POST.get('phone')
         updateStudent.address = request.POST.get('address')
+        updateStudent.parents_name = request.POST.get('parents_name')
+        updateStudent.parents_phone_no = request.POST.get('parents_phone')
+        updateStudent.ligal_document = request.FILES.get('ligal_document')
 
-        if not updateStudent.first_name or not updateStudent.last_name or not updateStudent.email or not updateStudent.date_of_birth or not updateStudent.gender or not updateStudent.phone or not updateStudent.address:
+
+
+        if not updateStudent.first_name or not updateStudent.last_name or not updateStudent.email or not updateStudent.date_of_birth or not updateStudent.gender or not updateStudent.phone or not updateStudent.address or not  updateStudent.parents_name or not  updateStudent.parents_phone_no or not  updateStudent.ligal_document:
             messages.error(request, 'Please fill in all the required fields.')
             return redirect('update-student', id=id)
 
