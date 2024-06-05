@@ -46,7 +46,7 @@
             </div>
             <div>
                 <label for="date-of-birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" name="date_of_birth" value="{{ editStudent.date_of_birth|date:"Y-m-d" }}" id="date-of-birth" required
+                <input type="date" name="date_of_birth" value="{{ editStudent.date_of_birth|date:"Y-m-d" }}" id="date-of-birth" 
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'date_of_birth' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.date_of_birth }}</p>
@@ -98,11 +98,11 @@
                 {% endif %}
             </div>
             <div>
-                <label for="ligal_document" class="block text-sm font-medium text-gray-700">Document</label>
-                <input type="file" name="ligal_document"value="{{ editStudent.ligal_document }}" id="ligal_document" 
+                <label for="legal_document" class="block text-sm font-medium text-gray-700">Document</label>
+                <input type="file" name="legal_document"value="{{ editStudent.legal_document }}" id="legal_document" 
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'ligal_document' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.ligal_document }}</p>
+                {% if 'legal_document' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.legal_document }}</p>
                 {% endif %}
             </div>
         </div>
