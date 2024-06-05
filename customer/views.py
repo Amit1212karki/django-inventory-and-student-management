@@ -3,11 +3,26 @@ from .models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from workspace.models import Workspace
+from django.core.paginator import Paginator
+from django.db.models import Q
 # Create your views here.
 
 def studentIndex(request):
-    students = Customer.objects.filter(customer_type='student')
-    return render(request, 'dashboard/pages/students/index.html', {'students': students})
+    search_query = request.GET.get('search', '')  # Get search query or default to empty string
+
+    students_list = Customer.objects.filter(customer_type='student')
+
+    if search_query:
+        students_list = students_list.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(email__icontains=search_query))  # Filter based on search terms
+
+    paginator = Paginator(students_list, 10)  # Show 10 students per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'page_obj': page_obj, 'search_query': search_query}  # Add search query to context
+
+    return render(request, 'dashboard/pages/students/index.html', context)
 
 def clientIndex(request):
     clients = Customer.objects.filter(customer_type='client')
