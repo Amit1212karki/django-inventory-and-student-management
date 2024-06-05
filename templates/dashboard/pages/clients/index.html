@@ -1,8 +1,8 @@
-<!-- customer/templates/customer/student_index.html -->
+<!-- customer/templates/customer/client_index.html -->
 {% extends 'dashboard/layout/main.html' %}
 
 {% block title %}
-{{ block.super }} - Student Index
+{{ block.super }} - Client Index
 {% endblock %}
 
 {% block content %}
@@ -23,12 +23,13 @@
                     </ol>
                 </nav>
             </div>
-            <div class="flex items-center space-x-4">
-                <input type="text" placeholder="Search..." class="mt-1 px-3 py-2 block w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
-                <a href="" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Add New Client
-                </a>
-            </div>
+            <form method="get" class="flex items-center space-x-4">
+                <div class="relative w-64">
+                  <input type="text" name="search" value="{{ search_query }}" placeholder="Search by name or email..." class="mt-1 block px-3 py-2 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" />
+                </div>
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Search</button>
+                <a href="/customer/add-clients-record" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add New Client</a>
+              </form>
         </div>
         
         <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -76,33 +77,79 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ client.address }}</p>
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                <a href="" class="mx-1 hover:text-blue-500">Edit</a>
+                                <a href="{% url 'edit-client' client.id %}" class="mx-1 hover:text-blue-500">Edit</a>
                                 <a href="" class="mx-1 hover:text-green-500">View</a>
-                                <a href="" class="mx-1 hover:text-red-500">Delete</a>
-
+                                <a href="" class="mx-1 hover:text-red-500 delete-button" data-tw-toggle="modal" data-tw-target="#deleteModal" data-client-id="{{ client.id }}" >Delete</a>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                <!-- Pagination, if needed -->
-                <!-- <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
-                    <span class="text-xs xs:text-sm text-gray-900">
-                        Showing 1 to 10 of 50 Entries
-                    </span>
-                    <div class="inline-flex mt-2 xs:mt-0">
-                        <button
-                            class="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-l">
-                            Prev
-                        </button>
-                        <button
-                            class="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-r">
-                            Next
-                        </button>
+
+                 <!-- Pagination -->
+                <div class="px-5 py-5 flex flex-col xs:flex-row items-center xs:justify-between">
+                    <span class="text-xs xs:text-sm text-gray-900">Showing {{ clients.start_index }} to {{ clients.end_index }} of {{ clients.paginator.count }} entries</span>
+                    <div class="flex items-center mt-4">
+                      <div class="mr-2">
+                        {% if clients.has_previous %}
+                          <a href="?page={{ clients.previous_page_number }}" class="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded">Prev</a>
+                        {% endif %}
+                      </div>
+                      <div>
+                        {% for num in clients.paginator.page_range %}
+                          {% if clients.number == num %}
+                            <span class="text-sm text-indigo-600 font-semibold py-2 px-4 rounded">{{ num }}</span>
+                          {% else %}
+                            <a href="?page={{ num }}" class="text-sm text-indigo-600 transition duration-150 hover:bg-indigo-500 hover:text-white bg-indigo-50 font-semibold py-2 px-4 rounded">{{ num }}</a>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                      <div class="ml-2">
+                        {% if clients.has_next %}
+                          <a href="?page={{ clients.next_page_number }}" class="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded">Next</a>
+                        {% endif %}
+                      </div>
                     </div>
-                </div> -->
+                  </div>
             </div>
         </div>
     </div>
 </div>
+
+<div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
+    <div class="bg-white p-8 rounded shadow-md text-center">
+        <h2 class="text-xl font-semibold mb-4">Are you sure you want to delete this student?</h2>
+        <form method="POST" id="deleteForm">
+            {% csrf_token %}
+            <input type="hidden" name="client_id" id="clientIdField" value="" />
+            <div class="flex justify-center space-x-4">
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Yes, Delete</button>
+                <button type="button" class="bg-gray-300 px-4 py-2 rounded" data-tw-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        const modal = document.getElementById('deleteModal');
+        const clientIdField = document.getElementById('clientIdField');
+        const deleteForm = document.getElementById('deleteForm');
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                const clientId = this.getAttribute('data-client-id');
+                clientIdField.value = clientId;
+                deleteForm.action = `/customer/delete-clients-record/${clientId}/`;
+                modal.classList.remove('hidden');
+            });
+        });
+        
+        document.querySelector('[data-tw-dismiss="modal"]').addEventListener('click', function () {
+            modal.classList.add('hidden');
+        });
+    });
+    </script>
 {% endblock %}

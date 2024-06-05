@@ -27,7 +27,7 @@ class Customer(models.Model):
     parents_name = models.CharField(max_length=100)
     parents_phone_no = models.CharField(max_length=15, blank=True, null=True)
     vat_pan_no = models.CharField(max_length=15, blank=True, null=True)
-    ligal_document = models.FileField(blank=True, null=True, upload_to='ligal_document/')
+    legal_document = models.FileField(blank=True, null=True, upload_to='legal_document/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
