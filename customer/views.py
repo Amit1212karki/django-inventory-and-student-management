@@ -32,6 +32,10 @@ def addStudent(request):
             parents_phone = request.POST.get('parents_phone')  
             document = None if not request.FILES.get('ligal_document') else request.FILES.get('ligal_document')
 
+            if not first_name or not last_name or not email or not gender or not phone or not address or not parents_name or not parents_phone:
+                messages.error(request, 'Please fill in all the required fields.')
+                return redirect('add-student')
+            
             new_student = Customer(
                 first_name=first_name,
                 last_name=last_name,
@@ -75,10 +79,7 @@ def updateStudent(request, id):
         updateStudent.parents_name = request.POST.get('parents_name')
         updateStudent.parents_phone_no = request.POST.get('parents_phone')
         if request.FILES.get('ligal_document'):
-            updateStudent.ligal_document = request.FILES.get('profile_image')
-        updateStudent.ligal_document = request.FILES.get('ligal_document')
-
-
+            updateStudent.ligal_document = request.FILES.get('ligal_document')
 
         if not updateStudent.first_name or not updateStudent.last_name or not updateStudent.email or not updateStudent.date_of_birth or not updateStudent.gender or not updateStudent.phone or not updateStudent.address or not  updateStudent.parents_name or not  updateStudent.parents_phone_no or not  updateStudent.ligal_document:
             messages.error(request, 'Please fill in all the required fields.')
