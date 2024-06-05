@@ -30,7 +30,7 @@ def clientIndex(request):
     client_search_query = request.GET.get('search', '')
 
     if client_search_query:
-        clients = clients.filter(Q(first_name__icontains=client_search_query) | Q(last_name__icontains=client_search_query) | Q(email__icontains=client_search_query) | Q(company__icontains=client_search_query) | Q(vat_pan_no__icontains=client_search_query))
+        clients = clients.filter(Q(first_name__icontains=client_search_query) | Q(last_name__icontains=client_search_query) | Q(email__icontains=client_search_query) | Q(company__icontains=client_search_query) | Q(vat_pan_no__icontains=client_search_query) | Q(phone__icontains=client_search_query))
 
     paginator = Paginator(clients, 10)  # Show 10 students per page
 

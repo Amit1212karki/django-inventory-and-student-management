@@ -9,7 +9,6 @@ urlpatterns = [
     path('update-student-record/<int:id>/', updateStudent, name='update-student'),
     path('delete-student-record/<int:id>/', deleteStudent, name='delete-student'),
 
-
     path('clients/', clientIndex, name='client-index'),
     path('add-clients-record/', addClient, name='add-client'),
     path('edit-clients-record/<int:id>/', editClient, name='edit-client'),
@@ -17,8 +16,5 @@ urlpatterns = [
     path('delete-clients-record/<int:id>/', deleteClient, name='delete-client'),
 
 
-
-
-    
 
 ]
