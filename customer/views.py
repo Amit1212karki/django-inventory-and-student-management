@@ -211,5 +211,4 @@ def deleteClient(request, id):
     deleteClient = Customer.objects.get(id=id)
     deleteClient.delete()
     return redirect('client-index')
-
-
+ 
