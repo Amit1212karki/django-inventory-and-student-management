@@ -54,9 +54,6 @@
                     <option value="yearly" {% if editProduct.subscription_period == 'yearly' %}selected{% endif %}>Yearly</option>
                 </select>
             </div>
-        
-            
-        
         </div>
         <div>
             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
@@ -73,37 +70,23 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var isRecurringSelect = document.getElementById('isRecurring');
-        var recurringPeriodDiv = document.getElementById('recurringPeriodDiv');
-        var editProductForm = document.getElementById('editProductForm');
-        var recurringPeriodSelect = document.getElementById('recurringPeriod');
+        const isRecurringSelect = document.getElementById('isRecurring');
+        const recurringPeriodDiv = document.getElementById('recurringPeriodDiv');
 
         function toggleRecurringPeriodDiv() {
             if (isRecurringSelect.value === 'True') {
-                recurringPeriodDiv.classList.remove('hidden');
-                recurringPeriodDiv.classList.add('block');
-                recurringPeriodSelect.required = true;
+                recurringPeriodDiv.style.display = 'block';
             } else {
-                recurringPeriodDiv.classList.remove('block');
-                recurringPeriodDiv.classList.add('hidden');
-                recurringPeriodSelect.required = false;
+                recurringPeriodDiv.style.display = 'none';
             }
         }
 
-        // Initial check when the page loads
+        // Initialize the display based on the current selection
         toggleRecurringPeriodDiv();
 
-        // Event listener for changes
+        // Add event listener to toggle visibility when the selection changes
         isRecurringSelect.addEventListener('change', toggleRecurringPeriodDiv);
-
-        // Form submit validation
-        editProductForm.addEventListener('submit', function (event) {
-            if (isRecurringSelect.value === 'True' && recurringPeriodSelect.value === "") {
-                alert('Please select a recurring period.');
-                event.preventDefault();
-            }
-        });
     });
-</script>
+    </script>
 
 {% endblock %}

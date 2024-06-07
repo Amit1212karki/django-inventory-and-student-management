@@ -31,7 +31,8 @@ def clientIndex(request):
 
     if client_search_query:
         clients = clients.filter(Q(first_name__icontains=client_search_query) | Q(last_name__icontains=client_search_query) | Q(email__icontains=client_search_query) | Q(company__icontains=client_search_query) | Q(vat_pan_no__icontains=client_search_query) | Q(phone__icontains=client_search_query))
-
+    else:
+        clients = clients
     paginator = Paginator(clients, 10)  # Show 10 students per page
 
     page_number = request.GET.get('page')
@@ -178,6 +179,8 @@ def editClient(request,id):
 
 def updateClient(request, id):
     updateClient = get_object_or_404(Customer, customer_type='client', id=id) 
+
+    
     if request.method == 'POST':
         updateClient.first_name = request.POST.get('first_name')
         updateClient.last_name = request.POST.get('last_name')

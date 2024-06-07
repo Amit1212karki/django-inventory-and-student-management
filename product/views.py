@@ -1,9 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
+from django.core.paginator import Paginator
+from django.db.models import Q
 # Create your views here.
 def index(request):
-    products = Product.objects.all()
-    return render(request,'dashboard/pages/products/index.html',{'products':products})
+
+    product_search_query = request.GET.get('search', '')  # Get search query or default to empty string
+    all_products = Product.objects.all()
+    if product_search_query:
+        products = all_products.filter(Q(name__icontains=product_search_query) | Q(price__icontains=product_search_query))
+    else:
+        products = all_products
+        
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page')
+
+    page_obj = paginator.get_page(page_number)
+     
+    context = {'products': page_obj, 'search_query': product_search_query}
+    return render(request,'dashboard/pages/products/index.html', context)
 
 def addProduct(request):
     if request.method == 'POST':
@@ -42,23 +57,36 @@ def editProduct(request,id):
 
 
 def updateProduct(request, id):
-     if request.method == 'POST':
-        updateProduct = get_object_or_404(Product, id=id)
+    updateProduct = get_object_or_404(Product, id=id)
 
+    if request.method == 'POST':
         updateProduct.name = request.POST.get('product_name')
         updateProduct.price = request.POST.get('product_price')
         updateProduct.description = request.POST.get('description')
         updateProduct.inventory_count = request.POST.get('inventory_count')
-        updateProduct.isrecurring = request.POST.get('isRecurring')
         updateProduct.subscription_period = request.POST.get('recurringPeriod') if  updateProduct.isrecurring == 'True' else None
         updateProduct.image = None if not request.FILES.get('product_image') else request.FILES.get('product_image')
         updateProduct.file = None if not request.FILES.get('product_file') else request.FILES.get('product_file')
-        if updateProduct.isrecurring == 'True':
+        is_recurring = request.POST.get('isRecurring')
+
+        updateProduct.isrecurring = 'Y' if is_recurring == 'True' else 'N'
+        if updateProduct.isrecurring == 'Y':
             updateProduct.subscription_period = request.POST.get('recurringPeriod')
         else:
-             updateProduct.subscription_period = None
+            updateProduct.subscription_period = None
+
 
         updateProduct.save()
-        return redirect('produt-index')
+        return redirect('product-index')
      
-     return render(request, 'dashboard/pages/products/edit.html', {'updateProducts': updateProduct}) 
+    return render(request, 'dashboard/pages/products/edit.html', {'updateProducts': updateProduct}) 
+
+def deleteProduct(request, id):
+    if request.method == 'POST':
+        deleteProduct = get_object_or_404(Product, id=id)
+        deleteProduct.delete()
+        return redirect('product-index')
+    
+    return redirect('product-index')
+
+        
