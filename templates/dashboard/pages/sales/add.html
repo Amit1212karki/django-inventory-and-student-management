@@ -7,106 +7,106 @@
 {% block content %}
 
 <div class="w-full bg-white p-8 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-semibold mb-6">Create Student Record</h1>
+    <h1 class="text-2xl font-semibold mb-6">Create New Sales Record</h1>
     <form action="{% url 'add-student' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
-                <input type="text" name="first_name" id="first-name" required
+                <label for="customer" class="block text-sm font-medium text-gray-700">Customer</label>
+                <select name="customer" id="customer"
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'first_name' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.first_name }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                <input type="text" name="last_name" id="last-name" required
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'last_name' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.last_name }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="profile_image" class="block text-sm font-medium text-gray-700">Profile Image</label>
-                <input type="file" name="profile_image" id="profile_image" 
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'profile_image' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.profile_image }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" name="email" id="email" required
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'email' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.email }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="date-of-birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" name="date_of_birth" id="date-of-birth" 
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'date_of_birth' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.date_of_birth }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
-                <select name="gender" id="gender" required
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                    <option value="" disabled selected>Select your gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="walk_in">Walk In Customer</option>
                 </select>
-                {% if 'gender' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.gender }}</p>
+                {% if 'customer' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.customer }}</p>
                 {% endif %}
             </div>
             <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input type="tel" name="phone" id="phone" required
+                <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                <input type="date" name="date" id="date" required
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'phone' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.phone }}</p>
+                {% if 'date' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.date }}</p>
                 {% endif %}
             </div>
             <div>
-                <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-                <input name="address" id="address" rows="3" required
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
-                {% if 'address' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.address }}</p>
-                {% endif %}
-            </div>
-
-            <div>
-                <label for="parents_name" class="block text-sm font-medium text-gray-700">Parents Name</label>
-                <input name="parents_name" id="parents_name" rows="3" required
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
-                {% if 'parents_name' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.parents_name }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="parents phone" class="block text-sm font-medium text-gray-700">Parents Phone Number</label>
-                <input type="tel" name="parents_phone" id="parents_phone" required
+                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                <select name="status" id="status"
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'parents_phone' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.parents_phone }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="ligal_document" class="block text-sm font-medium text-gray-700">Document</label>
-                <input type="file" name="ligal_document" id="ligal_document" 
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'ligal_document' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.ligal_document }}</p>
+                    <option value="draft">Draft</option>
+                    <option value="sent">Sent</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                {% if 'status' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.status }}</p>
                 {% endif %}
             </div>
         </div>
-        <div class="flex justify-end">
+        <div class="mt-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Items</h3>
+            <hr class="my-5">
+            <div id="products-container" class="space-y-4">
+                <div class="product-row grid grid-cols-4 gap-4">
+                    <div>
+                        <label for="product-0" class="block text-sm font-medium text-gray-700">Product</label>
+                        <select name="products[0][product]" id="product-0"
+                            class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                            <!-- Add product options here -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="quantity-0" class="block text-sm font-medium text-gray-700">Quantity</label>
+                        <input type="number" name="products[0][quantity]" id="quantity-0" required min="1"
+                            class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="price-0" class="block text-sm font-medium text-gray-700">Price</label>
+                        <input type="number" name="products[0][price]" id="price-0" required step="0.01"
+                            class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="total-0" class="block text-sm font-medium text-gray-700">Total</label>
+                        <input type="number" name="products[0][total]" id="total-0" readonly
+                            class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="button" id="add-product-row"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Add Product
+                </button>
+            </div>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-4">
+            <div>
+                <label for="subtotal" class="block text-sm font-medium text-gray-700">Subtotal</label>
+                <input type="number" name="subtotal" id="subtotal" readonly
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="discount" class="block text-sm font-medium text-gray-700">Discount</label>
+                <input type="number" name="discount" id="discount" step="0.01" min="0"
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="vat-percent" class="block text-sm font-medium text-gray-700">VAT (%)</label>
+                <input type="number" name="vat_percent" id="vat-percent" step="0.01" min="0"
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="vat-amount" class="block text-sm font-medium text-gray-700">VAT Amount</label>
+                <input type="number" name="vat_amount" id="vat-amount" readonly
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+            <div>
+                <label for="total" class="block text-sm font-medium text-gray-700">Total</label>
+                <input type="number" name="total" id="total" readonly
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            </div>
+        </div>
+        <div class="flex justify-end mt-6">
             <button type="submit"
                 class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Submit
@@ -115,5 +115,64 @@
     </form>
 </div>
 
+<script>
+    document.getElementById('add-product-row').addEventListener('click', function () {
+        let container = document.getElementById('products-container');
+        let productRows = container.getElementsByClassName('product-row');
+        let newRow = productRows[0].cloneNode(true);
+        let rowIndex = productRows.length;
 
+        newRow.querySelectorAll('input, select').forEach(function (element) {
+            let name = element.getAttribute('name');
+            if (name) {
+                let newName = name.replace(/\d+/, rowIndex);
+                element.setAttribute('name', newName);
+                element.setAttribute('id', newName);
+            }
+            element.value = ''; // Clear the value
+        });
+
+        container.appendChild(newRow);
+        addEventListeners(newRow);
+        calculateTotal();
+    });
+
+    function addEventListeners(row) {
+        row.querySelectorAll('input').forEach(function (input) {
+            input.addEventListener('input', calculateTotal);
+        });
+    }
+
+    function calculateTotal() {
+        let productRows = document.querySelectorAll('.product-row');
+        let subtotal = 0;
+        productRows.forEach(function (row) {
+            let quantity = row.querySelector('input[name*="[quantity]"]').value || 0;
+            let price = row.querySelector('input[name*="[price]"]').value || 0;
+            let total = row.querySelector('input[name*="[total]"]');
+            let rowTotal = parseFloat(quantity) * parseFloat(price);
+            total.value = rowTotal.toFixed(2);
+            subtotal += rowTotal;
+        });
+        document.getElementById('subtotal').value = subtotal.toFixed(2);
+
+        let discount = parseFloat(document.getElementById('discount').value) || 0;
+        let amountAfterDiscount = subtotal - discount;
+
+        let vatPercent = parseFloat(document.getElementById('vat-percent').value) || 0;
+        let vatAmount = amountAfterDiscount * (vatPercent / 100);
+        document.getElementById('vat-amount').value = vatAmount.toFixed(2);
+
+        let total = amountAfterDiscount + vatAmount;
+        document.getElementById('total').value = total.toFixed(2);
+    }
+
+    document.getElementById('discount').addEventListener('input', calculateTotal);
+    document.getElementById('vat-percent').addEventListener('input', calculateTotal);
+
+    document.querySelectorAll('.product-row').forEach(function (row) {
+        addEventListeners(row);
+        calculateTotal();
+    });
+</script>
 {% endblock %}
