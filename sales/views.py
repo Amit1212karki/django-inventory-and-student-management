@@ -4,7 +4,7 @@ from product.models import *
 
 # Create your views here.
 def index(request):
-    return render(request,'dashboard/pages/sales/index.html')
+    return render(request,'dashboard/pages/sales/index.html',)
 
 def addNewSales(request):
     customers = Customer.objects.all()
