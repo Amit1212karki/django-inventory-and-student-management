@@ -1,0 +1,119 @@
+{% extends 'dashboard/layout/main.html' %}
+
+{% block title %}
+{{ block.super }} - Add Student
+{% endblock %}
+
+{% block content %}
+
+<div class="w-full bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-semibold mb-6">Create Student Record</h1>
+    <form action="{% url 'add-student' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
+                <input type="text" name="first_name" id="first-name" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'first_name' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.first_name }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                <input type="text" name="last_name" id="last-name" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'last_name' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.last_name }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="profile_image" class="block text-sm font-medium text-gray-700">Profile Image</label>
+                <input type="file" name="profile_image" id="profile_image" 
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'profile_image' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.profile_image }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'email' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.email }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="date-of-birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                <input type="date" name="date_of_birth" id="date-of-birth" 
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'date_of_birth' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.date_of_birth }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                <select name="gender" id="gender" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                    <option value="" disabled selected>Select your gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+                {% if 'gender' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.gender }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" name="phone" id="phone" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'phone' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.phone }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                <input name="address" id="address" rows="3" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                {% if 'address' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.address }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="parents_name" class="block text-sm font-medium text-gray-700">Parents Name</label>
+                <input name="parents_name" id="parents_name" rows="3" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                {% if 'parents_name' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.parents_name }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="parents phone" class="block text-sm font-medium text-gray-700">Parents Phone Number</label>
+                <input type="tel" name="parents_phone" id="parents_phone" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'parents_phone' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.parents_phone }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="ligal_document" class="block text-sm font-medium text-gray-700">Document</label>
+                <input type="file" name="ligal_document" id="ligal_document" 
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'ligal_document' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.ligal_document }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="flex justify-end">
+            <button type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}
