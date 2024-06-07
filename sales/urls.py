@@ -8,4 +8,5 @@ from .views import *
 urlpatterns = [
     path('',index),
     path('add-new-sales/',addNewSales), 
+    path('store-sales-data/', store_sales_data),
 ] 

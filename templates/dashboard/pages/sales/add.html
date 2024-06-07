@@ -17,7 +17,7 @@
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                     <option value="walk_in">Walk In Customer</option>
                     {% for customer in customers %}
-                    <option value="{{ customer.id }}">{{ customer.name }}</option>
+                    <option value="{{ customer.id }}">{{ customer.first_name }} {{ customer.last_name }} </option>
                     {% endfor %}
                 </select>
                 {% if 'customer' in form.errors %}
@@ -286,6 +286,18 @@
 
         // Output the bill object (you can use this data for further processing or sending to a server)
         console.log(JSON.stringify(bill));
+
+        axios.post('/sales/store-sales-data/', bill)
+            .then(function (response) {
+                // Handle success
+                console.log(response.data);
+                // Optionally, you can perform additional actions here after successfully storing the data
+            })
+            .catch(function (error) {
+                // Handle error
+                console.error(error);
+                // Optionally, you can perform additional actions here if the request fails
+            });
     }
 </script>
 {% endblock %}
