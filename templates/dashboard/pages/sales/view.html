@@ -1,0 +1,338 @@
+<!-- customer/templates/customer/student_index.html -->
+{% extends 'dashboard/layout/main.html' %}
+
+{% block title %}
+{{ block.super }} - Invoice Details
+{% endblock %}
+
+{% block content %}
+
+<style>
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #bill-container,
+    #bill-container * {
+      visibility: visible;
+    }
+
+    #bill-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+</style>
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold mb-4">Sales Invoice</h1>
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-4 mb-4">
+      <button id="print-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Print
+        Bill</button>
+      <button id="export-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Export
+        PDF</button>
+      <button id="send-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        <span id="button-text">Send Bill</span>
+        <svg id="spinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C6.268 0 0 6.268 0 12h4zm2 5.291A7.963 7.963 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+      </button>
+      <button id="record-transaction-button"
+        class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Record Transaction</button>
+    </div>
+  </div>
+  <div id="bill-container" class="p-6 rounded-lg bg-white mb-6">
+    <div class="flex justify-between items-center mb-6">
+      <div class="">
+        <!-- <img src="" alt="Company Logo" class="h-16 w-auto mb-2"> -->
+        <p class="font-bold text-2xl">Hunchha Digital</p>
+        <p>Address: Itahari Sunsari, Nepal</p>
+        <p>PAN No: 619870061</p>
+      </div>
+      <div class="">
+        <h2 class="text-2xl font-semibold">Invoice</h2>
+        <p>Date: {{ sales.sales_date|date:"Y-m-d" }}</p>
+        <p>Invoice Number: {{ sales.id }}</p>
+      </div>
+    </div>
+    <!-- Bill Header -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-xl font-semibold">Customer</h2>
+        <p class="mb-1">Name: {{ sales.customer.first_name }} {{ sales.customer.lastname }}</p>
+        <p class="mb-1">Address: {{ sales.customer.address }} </p>
+        <p class="mb-1">Pan/Vat No: {{ sales.customer.pan_vat_no }} </p>
+        Status:
+        <span
+          class="badge uppercase px-3 py-1 my-2 text-white {% if sales.status == 'draft' %}bg-gray-400{% elif sales.status == 'sent' %}bg-blue-400{% elif sales.status == 'completed' %}bg-green-400{% elif sales.status == 'cancelled' %}bg-red-400{% endif %}">
+          {{ sales.status }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Bill Table -->
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="py-2 px-4 border border-gray-200 text-start">Product</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Quantity</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Price</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detail in sales_details %}
+        <tr>
+          <td class="border px-4 py-2 text-start">{{ detail.product.name }}</td>
+          <td class="border px-4 py-2">{{ detail.quantity }}</td>
+          <td class="border px-4 py-2">{{ detail.price }}</td>
+          <td class="border px-4 py-2">{{ detail.total }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Bill Summary -->
+    <div class="flex justify-end mt-4">
+      <div class="w-1/2">
+        <div class="flex justify-between py-2">
+          <span>Subtotal:</span>
+          <span>{{ sales.sub_total }}</span>
+        </div>
+        <div class="flex justify-between py-2">
+          <span>Discount:</span>
+          <span>{{ sales.discount }}</span>
+        </div>
+        <div class="flex justify-between py-2">
+          <span>VAT:</span>
+          <span>{{ sales.vat_amount }}</span>
+        </div>
+        <div class="flex justify-between py-2 font-bold">
+          <span>Total:</span>
+          <span>{{ sales.total }}</span>
+        </div>
+        <div class="flex justify-between py-2">
+          <span>Total Paid Amount:</span>
+          <span>{{ total_paid_amount }}</span>
+        </div>
+        <!-- total due amount -->
+        <div class="flex justify-between py-2">
+          <span>Total Due Amount:</span>
+          <span>{{ total_due_amount }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="my-5"></div>
+    <!-- transaction summary -->
+    <h1 class="text-2xl font-bold mt-5">Payments</h1>
+    <hr class="mb-6 w-[60%]">
+    <table class="min-w-[60%] bg-white">
+      <thead>
+        <tr class="bg-gray-300">
+          <th class="text-start border border-gray-200 px-3 py-2">Date</th>
+          <th class="text-start border border-gray-200 px-3 py-2">Amount</th>
+          <th class="text-start border border-gray-200 px-3 py-2">Payment Method</th>
+          <th class="text-start border border-gray-200 px-3 py-2">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in transaction_details %}
+        <tr>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.transaction_date|date:"Y-m-d" }}</td>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.amount }}</td>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.payment_method }}</td>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.notes }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <!-- Transaction Form -->
+  <div id="transaction-form" class="hidden">
+    <h2 class="text-xl font-semibold mb-2">Record Transaction</h2>
+    <form id="transaction-form-content" class="bg-white p-4 rounded-lg shadow-md" action="#">
+      <div class="mb-4">
+        <label for="transaction-amount" class="block text-gray-700 text-sm font-bold mb-2">Transaction Amount:</label>
+        <input type="text" id="transaction-amount" name="transaction-amount"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+      </div>
+      <div class="mb-4">
+        <label for="transaction-date" class="block text-gray-700 text-sm font-bold mb-2">Transaction Date:</label>
+        <input type="date" id="transaction-date" name="transaction-date"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+      </div>
+      <div class="mb-4">
+        <label for="transaction-payment-method" class="block text-gray-700 text-sm font-bold mb-2">Payment
+          Method:</label>
+        <select id="transaction-payment-method" name="transaction-payment-method"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option value="cash">Cash</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="transaction-notes" class="block text-gray-700 text-sm font-bold mb-2">Notes:</label>
+        <textarea id="transaction-notes" name="transaction-notes"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+      </div>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Save
+        Transaction</button>
+    </form>
+  </div>
+
+</div>
+
+
+<script>
+  document.getElementById('print-button').addEventListener('click', function () {
+    window.print()
+  })
+
+  document.getElementById('export-button').addEventListener('click', function () {
+    exportPDF()
+  })
+
+  document.getElementById('send-button').addEventListener('click', function () {
+    sendBill()
+  })
+
+  document.getElementById('transaction-form-content').addEventListener('submit', function (event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Call the saveTransaction function to handle the form submission
+    saveTransaction();
+  });
+
+  document.getElementById('record-transaction-button').addEventListener('click', function () {
+    let form = document.getElementById('transaction-form')
+    form.classList.toggle('hidden')
+  })
+
+  function exportPDF() {
+    // Create a new jsPDF instance with landscape orientation
+    const doc = new jsPDF('landscape');
+
+    // Get the width and height of the A4 paper
+    const a4Width = 295; // A4 width in mm
+    const a4Height = 210; // A4 height in mm
+
+    // Get the width and height of the bill container
+    const billContainerWidth = document.getElementById('bill-container').offsetWidth;
+    const billContainerHeight = document.getElementById('bill-container').offsetHeight;
+
+    // Calculate the scale factor to fit the content within the A4 paper
+    const scaleFactor = a4Width / billContainerWidth;
+
+    // Calculate the scaled height of the bill container
+    const scaledHeight = billContainerHeight * scaleFactor;
+
+    // Convert HTML to canvas
+    html2canvas(document.getElementById('bill-container')).then(function (canvas) {
+      // Add canvas to PDF, scaling it to fit the A4 paper width
+      const imgData = canvas.toDataURL('image/png');
+      doc.addImage(imgData, 'PNG', 0, 0, a4Width, scaledHeight);
+
+      // Save the PDF
+      doc.save('bill.pdf');
+    });
+  }
+
+
+  function sendBill() {
+    const sendButton = document.getElementById('send-button');
+    const spinner = document.getElementById('spinner');
+    const buttonText = document.getElementById('button-text');
+
+    // Show spinner loader and hide button text
+    spinner.classList.remove('hidden');
+    buttonText.classList.add('hidden');
+    sendButton.disabled = true;
+
+    // Get the customer's email
+    const customerEmail = "{{ sales.customer.email }}";
+    const sales_id = "{{ sales.id }}";
+
+    // Prepare the data to send
+    let data = {
+      sales_id: sales_id,
+      email: customerEmail
+    };
+
+    // Send the sales_id to the Django backend
+    axios.post('/sales/send-bill/', data)
+      .then(function (response) {
+        console.log(response.data);
+        console.log('Request sent successfully');
+
+        // Hide spinner loader, show button text, and enable button
+        spinner.classList.add('hidden');
+        buttonText.classList.remove('hidden');
+        sendButton.disabled = false;
+
+        // Show success toast message
+        showToast('Bill sent successfully');
+      })
+      .catch(function (error) {
+        console.error('Error sending request:', error);
+
+        // Hide spinner loader, show button text, and enable button
+        spinner.classList.add('hidden');
+        buttonText.classList.remove('hidden');
+        sendButton.disabled = false;
+
+        // Show error toast message
+        showToast('Error sending bill. Please try again later.', 'error');
+      });
+  }
+
+  function showToast(message, type = 'success') {
+    // You can implement your toast message display logic here
+    alert(message);
+  }
+
+
+  function saveTransaction() {
+    // Get form data
+    const transactionAmount = document.getElementById('transaction-amount').value;
+    const transactionDate = document.getElementById('transaction-date').value;
+    const paymentMethod = document.getElementById('transaction-payment-method').value;
+    const transactionNotes = document.getElementById('transaction-notes').value;
+
+    // Create data object
+    const data = {
+      transaction_amount: transactionAmount,
+      transaction_date: transactionDate,
+      payment_method: paymentMethod,
+      transaction_notes: transactionNotes
+    };
+
+    // Send data to Django backend using Axios
+    axios.post('/sales/save-transaction/{{ sales.id }}', data)
+      .then(function (response) {
+        console.log('Transaction saved successfully:', response.data);
+        // Optionally, perform any actions after successful submission
+        window.location.reload()
+      })
+      .catch(function (error) {
+        console.error('Error saving transaction:', error);
+        // Optionally, handle errors or display an error message to the user
+      });
+  }
+
+</script>
+
+{% endblock %}

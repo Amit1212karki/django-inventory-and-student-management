@@ -12,3 +12,4 @@ class SalesAdmin(admin.ModelAdmin):
 
 admin.site.register(Sales, SalesAdmin)
 admin.site.register(SalesDetail)
+admin.site.register(Transaction)

@@ -286,6 +286,7 @@
           // Handle success
           console.log(response.data)
           // Optionally, you can perform additional actions here after successfully storing the data
+          window.location.href = `/sales/view-sales-invoice/${response.data.sales_id}`;
         })
         .catch(function (error) {
           // Handle error

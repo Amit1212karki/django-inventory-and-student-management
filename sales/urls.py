@@ -9,4 +9,12 @@ urlpatterns = [
     path('',index),
     path('add-new-sales/',addNewSales), 
     path('store-sales-data/', store_sales_data),
+    path('view-sales-invoice/<int:sales_id>/', view_sales_invoice),
+    path('send-bill/', send_bill),
+    path('save-transaction/<int:sales_id>', save_transaction),
+    path('email-temp/<int:sales_id>', show_template),
+
+
+
+
 ] 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        h2,h3 {
+            margin: 0;
+        }
+
+
+        .details {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .details th,
+        .details td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: start;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Invoice</h2>
+        <hr>
+        <div class="header">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h3>Hunchha Digital</h3>
+                        <p>Address: Itahari Sunsari, Nepal</p>
+                        <p>PAN No: 619870061</p>
+                    </td>
+                    <td align="right">
+                        <h3>Invoice Details</h3>
+                        <p>Date: {{ sales.sales_date|date:"Y-m-d" }}</p>
+                        <p>Invoice Number: {{ sales.id }}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="details">
+            <div>
+                <h3>Customer</h3>
+                <p>Name: {{ sales.customer.first_name }} {{ sales.customer.last_name }}</p>
+                <p>Address: {{ sales.customer.address }} </p>
+                <p>Pan/Vat No: {{ sales.customer.pan_vat_no }} </p>
+            </div>
+        </div>
+        <table class="details">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in sales_details %}
+                <tr>
+                    <td>{{ detail.product.name }}</td>
+                    <td>{{ detail.quantity }}</td>
+                    <td>{{ detail.price }}</td>
+                    <td>{{ detail.total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total">
+            <div class="w-1/2">
+                <div>
+                    <span>Subtotal:</span>
+                    <span>{{ sales.sub_total }}</span>
+                </div>
+                <div>
+                    <span>Discount:</span>
+                    <span>{{ sales.discount }}</span>
+                </div>
+                <div>
+                    <span>VAT:</span>
+                    <span>{{ sales.vat_amount }}</span>
+                </div>
+                <div>
+                    <span>Total:</span>
+                    <span>{{ sales.total }}</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span>Total Paid Amount:</span>
+                    <span>{{ total_paid_amount }}</span>
+                </div>
+                <!-- total due amount -->
+                <div class="flex justify-between py-2">
+                    <span>Total Due Amount:</span>
+                    <span>{{ total_due_amount }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Payments</h2>
+        <hr>
+        <table class="details">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transaction_details %}
+                <tr>
+                    <td>{{ transaction.transaction_date|date:"Y-m-d"}}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.payment_method }}</td>
+                    <td>{{ transaction.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
