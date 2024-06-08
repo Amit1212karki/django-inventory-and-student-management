@@ -1,5 +1,6 @@
 from django.db import models
 from workspace.models import Workspace
+from django.core.files.storage import FileSystemStorage
 # Create your models here.
 class Product(models.Model):
     SUBSCRIPTION_PERIOD_CHOICES = [
@@ -7,6 +8,11 @@ class Product(models.Model):
         ('quarterly', 'Quarterly'),
         ('yearly', 'Yearly'),
     ]
+    isrecurring_choices = [
+        ('Y', 'Yes'),
+        ('N', 'No')
+    ]
+    isrecurring = models.CharField(max_length=1, choices=isrecurring_choices)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
