@@ -1,16 +1,22 @@
 from django.db import models
 from product.models import *
 from customer.models  import *
+from django.utils import timezone
 # Create your models here.
 
 class Sales(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='sales')
-    sales_date = models.DateTimeField(auto_now_add=True)
+    sales_date = models.DateTimeField(default=timezone.now)  # Set the default value to the current datetime
     status = models.CharField(max_length=50, choices=[
-        ('pending', 'Pending'),
+        ('draft', 'Draft'),
         ('completed', 'Completed'),
         ('canceled', 'Canceled'),
-    ], default='pending')
+    ], default='draft')
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
+    vat_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True)
+    vat_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -20,6 +26,7 @@ class SalesDetail(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sales_details')
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

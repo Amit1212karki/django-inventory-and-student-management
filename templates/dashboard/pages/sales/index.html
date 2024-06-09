@@ -47,19 +47,23 @@
               </tr>
             </thead>
             <tbody>
-              {% for sales in page_obj %}
+              {% for sale in sales %}
                 <tr>
+                  
                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p class="text-gray-900 whitespace-no-wrap">{{ student.first_name }} {{ student.last_name }}</p>
+                  
+                    <p class="text-gray-900 whitespace-no-wrap">{{ sale.customer.first_name }} {{ sale.customer.last_name }}</p>
+                 
+
                   </td>
                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p class="text-gray-900 whitespace-no-wrap">{{ student.email }}</p>
+                    <p class="text-gray-900 whitespace-no-wrap">{{ sale.total }}</p>
                   </td>
                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p class="text-gray-900 whitespace-no-wrap">{{ student.phone }}</p>
+                    <p class="text-gray-900 whitespace-no-wrap">{{ sale.phone }}</p>
                   </td>
                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p class="text-gray-900 whitespace-no-wrap">{{ student.address }}</p>
+                    <p class="text-gray-900 whitespace-no-wrap">{{ sale.address }}</p>
                   </td>
 
                   <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
