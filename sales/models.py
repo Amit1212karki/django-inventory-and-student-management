@@ -9,6 +9,7 @@ class Sales(models.Model):
     sales_date = models.DateTimeField(default=timezone.now)  # Set the default value to the current datetime
     status = models.CharField(max_length=50, choices=[
         ('draft', 'Draft'),
+        ('sent', 'Sent'),
         ('completed', 'Completed'),
         ('canceled', 'Canceled'),
     ], default='draft')

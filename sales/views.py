@@ -110,25 +110,31 @@ def send_bill(request):
             data = json.loads(request.body)
             sales_id = data.get('sales_id')
             customer_email = data.get('email')
+            
             # Fetch the sales data from the database
             sales = get_object_or_404(Sales, id=sales_id)
             sales_details = sales.details.all()
             transaction_details = sales.transactions.all()
+            
             # Calculate total paid amount
             total_paid_amount = sales.transactions.aggregate(total_paid=Sum('amount')).get('total_paid') or 0
+            
             # Calculate total due amount
             total_due_amount = sales.total - total_paid_amount
-            # use the email template pass the sales and sales detail to email template and send the email
+            
+            # Use the email template, pass the sales and sales detail to email template and send the email
             context = {
-                'sales':sales,
-                'sales_details':sales_details,
+                'sales': sales,
+                'sales_details': sales_details,
                 'transaction_details': transaction_details,
                 'total_paid_amount': total_paid_amount,
                 'total_due_amount': total_due_amount
             }
+            
             # Render the email template with context
             email_body = render_to_string('email/bill_email_template.html', context)
-            # send email
+            
+            # Send email
             email = EmailMessage(
                 subject='Your Bill',
                 body=email_body,
@@ -136,6 +142,11 @@ def send_bill(request):
             )
             email.content_subtype = 'html'  # Set the email content type to HTML
             email.send()
+            
+            # Update the sales object status to 'sent'
+            sales.status = 'sent'
+            sales.save()
+            
             return JsonResponse({'message': 'Email sent successfully'}, status=200)
         except Exception as e:
             # Handle any potential errors and return an error response

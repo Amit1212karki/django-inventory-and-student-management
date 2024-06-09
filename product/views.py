@@ -39,7 +39,7 @@ def addProduct(request):
             price=product_price,
             inventory_count=inventory_count,
             isrecurring='Y' if is_recurring == 'True' else 'N',
-            subscription_period=recurring_period,
+            recurring_period=recurring_period,
             description=description,
             image=product_image,
             file=product_file
