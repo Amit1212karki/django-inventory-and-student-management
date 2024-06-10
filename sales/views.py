@@ -12,12 +12,24 @@ from datetime import datetime
 from django.template.loader import render_to_string
 from django.db.models import Sum
 from django.views.decorators.http import require_http_methods
-
+from django.db.models import Q
+from django.core.paginator import Paginator
 # Create your views here.
 def index(request):
+    sales_search_query = request.GET.get('search','')
     sales_list = Sales.objects.all()
+    if sales_search_query:
+        sales_list = sales_list.filter(
+            Q(customer__first_name__icontains=sales_search_query) |
+            Q(customer__last_name__icontains=sales_search_query)
+        )
+
+    paginator = Paginator(sales_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     sales_data = []
 
+    
     for sales in sales_list:
         total_transactions = sales.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         pending_payment = sales.total - total_transactions
@@ -28,7 +40,7 @@ def index(request):
         })
 
     return render(request, 'dashboard/pages/sales/index.html', {
-        'sales_data': sales_data,
+        'sales_data': sales_data, 'page_obj': page_obj, 'search_query': sales_search_query
     })
 
 def addNewSales(request):

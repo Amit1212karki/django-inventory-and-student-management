@@ -125,7 +125,10 @@
         <div class="mt-6 flex justify-end">
             <button type="submit" id="submit-button" class="bg-indigo-600 text-white py-2 px-4 rounded hover:text-indigo-800 focus:outline-none">
                 <span id="button-text">Update Sales</span>
-                <span id="spinner" class="hidden">Loading...</span>
+                    <svg id="spinner" class="animate-spin h-5 w-5 text-white ml-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C6.268 0 0 6.268 0 12h4zm2 5.291A7.963 7.963 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
             </button>
         </div>
     </form>
