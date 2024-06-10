@@ -1,303 +1,304 @@
 {% extends 'dashboard/layout/main.html' %}
 
 {% block title %}
-{{ block.super }} - Add Student
+  {{ block.super }} - Add Sales
 {% endblock %}
 
 {% block content %}
-
-<div class="w-full bg-white p-8 rounded-lg shadow-lg">
+  <div class="w-full bg-white p-8 rounded-lg shadow-lg">
     <h1 class="text-2xl font-semibold mb-6">Create New Sales Record</h1>
-    <form action="{% url 'store-sales' %}" method="POST" class="space-y-6" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label for="customer" class="block text-sm font-medium text-gray-700">Customer</label>
-                <select name="customer" id="customer"
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                    <option value="walk_in">Walk In Customer</option>
-                    {% for customer in customers %}
-                    <option value="{{ customer.id }}">{{ customer.first_name }} {{ customer.last_name }} </option>
+    <form action="#" method="POST" class="space-y-6" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="customer" class="block text-sm font-medium text-gray-700">Customer</label>
+          <select name="customer" id="customer" class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            <option value="">Select Customer</option>
+            {% for customer in customers %}
+              <option value="{{ customer.id }}">{{ customer.first_name }} {{ customer.last_name }}</option>
+            {% endfor %}
+          </select>
+          {% if 'customer' in form.errors %}
+            <p class="text-red-500 text-sm">{{ form.errors.customer }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+          <input type="date" name="date" id="date" required class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+          {% if 'date' in form.errors %}
+            <p class="text-red-500 text-sm">{{ form.errors.date }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+          <select name="status" id="status" class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          {% if 'status' in form.errors %}
+            <p class="text-red-500 text-sm">{{ form.errors.status }}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="mt-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Products</h3>
+        <div id="products-container">
+          <table class="w-full table-auto">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="px-4 py-2 border border-gray-300">Product</th>
+                <th class="px-4 py-2 border border-gray-300">Quantity</th>
+                <th class="px-4 py-2 border border-gray-300">Price</th>
+                <th class="px-4 py-2 border border-gray-300">Total</th>
+                <th class="px-4 py-2 border border-gray-300"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="product-row">
+                <td class="border px-4 py-2">
+                  <select name="products[0][product]" id="product-0" class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm product-select">
+                    <option value="">Select a product</option>
+                    {% for product in products %}
+                      <option value="{{ product.id }}" data-price="{{ product.price }}">{{ product.name }}</option>
                     {% endfor %}
-                </select>
-                {% if 'customer' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.customer }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                <input type="date" name="date" id="date" required
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                {% if 'date' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.date }}</p>
-                {% endif %}
-            </div>
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select name="status" id="status"
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                    <option value="draft">Draft</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-                {% if 'status' in form.errors %}
-                <p class="text-red-500 text-sm">{{ form.errors.status }}</p>
-                {% endif %}
-            </div>
+                  </select>
+                </td>
+                <td class="border px-4 py-2">
+                  <input type="number" name="products[0][quantity]" id="quantity-0" value="1" required min="1" class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                </td>
+                <td class="border px-4 py-2">
+                  <input type="number" name="products[0][price]" id="price-0" required step="0.01" class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm price-input" />
+                </td>
+                <td class="border px-4 py-2">
+                  <input type="number" name="products[0][total]" id="total-0" readonly class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                </td>
+                <td class="border px-4 py-2">
+                  <button type="button" class="remove-product-row bg-red-600 py-2 px-2 rounded text-white hover:text-red-800 focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="mt-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Products</h3>
-            <div id="products-container">
-                <table class="w-full table-auto">
-                    <thead class="bg-gray-200">
-                        <tr>
-                            <th class="px-4 py-2 border border-gray-300">Product</th>
-                            <th class="px-4 py-2 border border-gray-300">Quantity</th>
-                            <th class="px-4 py-2 border border-gray-300">Price</th>
-                            <th class="px-4 py-2 border border-gray-300">Total</th>
-                            <th class="px-4 py-2 border border-gray-300"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="product-row">
-                            <td class="border px-4 py-2">
-                                <select name="products[0][product]" id="product-0"
-                                    class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm product-select">
-                                    <option value="">Select a product</option>
-                                    {% for product in products %}
-                                    <option value="{{ product.id }}" data-price="{{ product.price }}">{{ product.name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td class="border px-4 py-2">
-                                <input type="number" name="products[0][quantity]" id="quantity-0" value="1" required
-                                    min="1"
-                                    class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                            </td>
-                            <td class="border px-4 py-2">
-                                <input type="number" name="products[0][price]" id="price-0" required step="0.01"
-                                    class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm price-input">
-                            </td>
-                            <td class="border px-4 py-2">
-                                <input type="number" name="products[0][total]" id="total-0" readonly
-                                    class="block w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-                            </td>
-                            <td class="border px-4 py-2">
-                                <button type="button"
-                                    class="remove-product-row bg-red-600 py-2 px-2 rounded text-white hover:text-red-800 focus:outline-none">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4">
-                <button type="button" id="add-product-row"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Add Product
-                </button>
-            </div>
+        <div class="mt-4">
+          <button type="button" id="add-product-row" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Product</button>
         </div>
-        <div class="mt-6 grid grid-cols-2 gap-4">
-            <div>
-                <label for="subtotal" class="block text-sm font-medium text-gray-700">Subtotal</label>
-                <input type="number" name="subtotal" id="subtotal" readonly
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-            </div>
-            <div>
-                <label for="discount" class="block text-sm font-medium text-gray-700">Discount</label>
-                <input type="number" name="discount" id="discount" step="0.01" min="0"
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-            </div>
-            <div>
-                <label for="vat-percent" class="block text-sm font-medium text-gray-700">VAT (%)</label>
-                <input type="number" name="vat_percent" id="vat-percent" step="0.01" min="0"
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-            </div>
-            <div>
-                <label for="vat-amount" class="block text-sm font-medium text-gray-700">VAT Amount</label>
-                <input type="number" name="vat_amount" id="vat-amount" readonly
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-            </div>
-            <div>
-                <label for="total" class="block text-sm font-medium text-gray-700">Total</label>
-                <input type="number" name="total" id="total" readonly
-                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
-            </div>
+      </div>
+      <div class="mt-6 grid grid-cols-2 gap-4">
+        <div>
+          <label for="subtotal" class="block text-sm font-medium text-gray-700">Subtotal</label>
+          <input type="number" name="subtotal" id="subtotal" readonly class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
         </div>
-        <div class="flex justify-end mt-6">
-            <button id="submit-button" type="submit"
-                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Submit
-            </button>
+        <div>
+          <label for="discount" class="block text-sm font-medium text-gray-700">Discount</label>
+          <input type="number" name="discount" id="discount" step="0.01" min="0" class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
         </div>
+        <div>
+          <label for="vat-percent" class="block text-sm font-medium text-gray-700">VAT (%)</label>
+          <input type="number" name="vat_percent" id="vat-percent" step="0.01" min="0" class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+        </div>
+        <div>
+          <label for="vat-amount" class="block text-sm font-medium text-gray-700">VAT Amount</label>
+          <input type="number" name="vat_amount" id="vat-amount" readonly class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+        </div>
+        <div>
+          <label for="total" class="block text-sm font-medium text-gray-700">Total</label>
+          <input type="number" name="total" id="total" readonly class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+        </div>
+      </div>
+      <div class="flex justify-end mt-6">
+        <button id="submit-button" type="submit" class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <span id="button-text">Submit</span>
+          <svg id="spinner" class="animate-spin h-5 w-5 text-white ml-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C6.268 0 0 6.268 0 12h4zm2 5.291A7.963 7.963 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+      </div>
     </form>
-</div>
+  </div>
 
-<script>
+  <script>
     document.getElementById('add-product-row').addEventListener('click', function () {
-        let container = document.getElementById('products-container').getElementsByTagName('tbody')[0];
-        let productRows = container.getElementsByClassName('product-row');
-        let newRow = productRows[0].cloneNode(true);
-        let rowIndex = productRows.length;
-
-        newRow.querySelectorAll('input, select').forEach(function (element) {
-            let name = element.getAttribute('name');
-            if (name) {
-                let newName = name.replace(/\d+/, rowIndex);
-                element.setAttribute('name', newName);
-                element.setAttribute('id', newName);
-            }
-            element.value = ''; // Clear the value
-        });
-
-        container.appendChild(newRow);
-        addEventListeners(newRow);
-        calculateTotal();
-    });
-
+      let container = document.getElementById('products-container').getElementsByTagName('tbody')[0]
+      let productRows = container.getElementsByClassName('product-row')
+      let newRow = productRows[0].cloneNode(true)
+      let rowIndex = productRows.length
+    
+      newRow.querySelectorAll('input, select').forEach(function (element) {
+        let name = element.getAttribute('name')
+        if (name) {
+          let newName = name.replace(/\d+/, rowIndex)
+          element.setAttribute('name', newName)
+          element.setAttribute('id', newName)
+        }
+        element.value = '' // Clear the value
+      })
+    
+      container.appendChild(newRow)
+      addEventListeners(newRow)
+      calculateTotal()
+    })
+    
     function addEventListeners(row) {
-        row.querySelectorAll('input').forEach(function (input) {
-            input.addEventListener('input', calculateTotal);
-        });
-
-        row.querySelector('.product-select').addEventListener('change', function () {
-            let selectedOption = this.options[this.selectedIndex];
-            let price = selectedOption.getAttribute('data-price');
-            let priceInput = row.querySelector('.price-input');
-            priceInput.value = price;
-            calculateTotal();
-        });
-
-        // Set default value of 1 for quantity input field
-        let quantityInput = row.querySelector('input[name*="[quantity]"]');
-        quantityInput.value = "1";
-
-        row.querySelector('.remove-product-row').addEventListener('click', function () {
-            row.remove();
-            calculateTotal();
-        });
+      row.querySelectorAll('input').forEach(function (input) {
+        input.addEventListener('input', calculateTotal)
+      })
+    
+      row.querySelector('.product-select').addEventListener('change', function () {
+        let selectedOption = this.options[this.selectedIndex]
+        let price = selectedOption.getAttribute('data-price')
+        let priceInput = row.querySelector('.price-input')
+        priceInput.value = price
+        calculateTotal()
+      })
+    
+      // Set default value of 1 for quantity input field
+      let quantityInput = row.querySelector('input[name*="[quantity]"]')
+      quantityInput.value = '1'
+    
+      row.querySelector('.remove-product-row').addEventListener('click', function () {
+        row.remove()
+        calculateTotal()
+      })
     }
-
+    
     function calculateTotal() {
-        let productRows = document.querySelectorAll('.product-row');
-        let subtotal = 0;
-        productRows.forEach(function (row) {
-            let quantity = row.querySelector('input[name*="[quantity]"]').value || 0;
-            let price = row.querySelector('input[name*="[price]"]').value || 0;
-            let total = row.querySelector('input[name*="[total]"]');
-            let rowTotal = parseFloat(quantity) * parseFloat(price);
-            total.value = rowTotal.toFixed(2);
-            subtotal += rowTotal;
-        });
-        document.getElementById('subtotal').value = subtotal.toFixed(2);
-
-        let discount = parseFloat(document.getElementById('discount').value) || 0;
-        let amountAfterDiscount = subtotal - discount;
-
-        let vatPercent = parseFloat(document.getElementById('vat-percent').value) || 0;
-        let vatAmount = amountAfterDiscount * (vatPercent / 100);
-        document.getElementById('vat-amount').value = vatAmount.toFixed(2);
-
-        let total = amountAfterDiscount + vatAmount;
-        document.getElementById('total').value = total.toFixed(2);
+      let productRows = document.querySelectorAll('.product-row')
+      let subtotal = 0
+      productRows.forEach(function (row) {
+        let quantity = row.querySelector('input[name*="[quantity]"]').value || 0
+        let price = row.querySelector('input[name*="[price]"]').value || 0
+        let total = row.querySelector('input[name*="[total]"]')
+        let rowTotal = parseFloat(quantity) * parseFloat(price)
+        total.value = rowTotal.toFixed(2)
+        subtotal += rowTotal
+      })
+      document.getElementById('subtotal').value = subtotal.toFixed(2)
+    
+      let discount = parseFloat(document.getElementById('discount').value) || 0
+      let amountAfterDiscount = subtotal - discount
+    
+      let vatPercent = parseFloat(document.getElementById('vat-percent').value) || 0
+      let vatAmount = amountAfterDiscount * (vatPercent / 100)
+      document.getElementById('vat-amount').value = vatAmount.toFixed(2)
+    
+      let total = amountAfterDiscount + vatAmount
+      document.getElementById('total').value = total.toFixed(2)
     }
-
-    document.getElementById('discount').addEventListener('input', calculateTotal);
-    document.getElementById('vat-percent').addEventListener('input', calculateTotal);
-
+    
+    document.getElementById('discount').addEventListener('input', calculateTotal)
+    document.getElementById('vat-percent').addEventListener('input', calculateTotal)
+    
     document.querySelectorAll('.product-row').forEach(function (row) {
-        addEventListeners(row);
-        calculateTotal();
-    });
-
+      addEventListeners(row)
+      calculateTotal()
+    })
+    
     document.addEventListener('DOMContentLoaded', function () {
-        // Add event listener to the submit button
-        document.getElementById('submit-button').addEventListener('click', function (event) {
-            // Prevent the default form submission behavior
-            event.preventDefault();
-
-            // Call the function to collect data and build the bill
-            collectDataAndBuildBill();
-        });
-    });
-
+      // Add event listener to the submit button
+      document.getElementById('submit-button').addEventListener('click', function (event) {
+        // Prevent the default form submission behavior
+        event.preventDefault()
+    
+        // Call the function to collect data and build the bill
+        collectDataAndBuildBill()
+      })
+    })
+    
     function collectDataAndBuildBill() {
-        // Collect customer ID
-        let customerId = document.getElementById('customer').value;
-
-        // Collect date
-        let date = document.getElementById('date').value;
-
-        // Collect status
-        let status = document.getElementById('status').value;
-
-        // Calculate subtotal
-        let subtotal = parseFloat(document.getElementById('subtotal').value);
-
-        // Calculate total
-        let total = parseFloat(document.getElementById('total').value);
-
-        // Collect discount
-        let discount = parseFloat(document.getElementById('discount').value);
-
-        // Collect VAT percent
-        let vatPercent = parseFloat(document.getElementById('vat-percent').value);
-
-        // Calculate VAT amount
-        let vatAmount = parseFloat(document.getElementById('vat-amount').value);
-
-        // Collect sales details
-        let salesDetails = [];
-        let productRows = document.querySelectorAll('.product-row');
-        productRows.forEach(function (row) {
-            let productId = row.querySelector('select[name*="[product]"]').value;
-            let quantity = parseInt(row.querySelector('input[name*="[quantity]"]').value);
-            let price = parseFloat(row.querySelector('input[name*="[price]"]').value);
-            let total = parseFloat(row.querySelector('input[name*="[total]"]').value);
-            if (productId && quantity && price && total) {
-                salesDetails.push({
-                    "product_id": productId,
-                    "quantity": quantity,
-                    "price": price,
-                    "total": total
-                });
-            }
-        });
-
-        // Construct the bill object
-        let bill = {
-            "customer_id": customerId,
-            "date": date,
-            "status": status,
-            "sub_total": subtotal,
-            "total": total,
-            "discount": discount,
-            "vat_percent": vatPercent,
-            "vat_amount": vatAmount,
-            "sales_details": salesDetails
-        };
-
-        // Output the bill object (you can use this data for further processing or sending to a server)
-        console.log(JSON.stringify(bill));
-
-        axios.post('/sales/store-sales-data/', bill)
-            .then(function (response) {
-                // Handle success
-                console.log(response.data);
-                // Optionally, you can perform additional actions here after successfully storing the data
-            })
-            .catch(function (error) {
-                // Handle error
-                console.error(error);
-                // Optionally, you can perform additional actions here if the request fails
-            });
+      // Collect customer ID
+      let customerId = document.getElementById('customer').value
+    
+      // Collect date
+      let date = document.getElementById('date').value
+    
+      // Collect status
+      let status = document.getElementById('status').value
+    
+      // Calculate subtotal
+      let subtotal = parseFloat(document.getElementById('subtotal').value)
+    
+      // Calculate total
+      let total = parseFloat(document.getElementById('total').value)
+    
+      // Collect discount
+      let discount = parseFloat(document.getElementById('discount').value)
+    
+      // Collect VAT percent
+      let vatPercent = parseFloat(document.getElementById('vat-percent').value)
+    
+      // Calculate VAT amount
+      let vatAmount = parseFloat(document.getElementById('vat-amount').value)
+    
+      // Collect sales details
+      let salesDetails = []
+      let productRows = document.querySelectorAll('.product-row')
+      productRows.forEach(function (row) {
+        let productId = row.querySelector('select[name*="[product]"]').value
+        let quantity = parseInt(row.querySelector('input[name*="[quantity]"]').value)
+        let price = parseFloat(row.querySelector('input[name*="[price]"]').value)
+        let total = parseFloat(row.querySelector('input[name*="[total]"]').value)
+        if (productId && quantity && price && total) {
+          salesDetails.push({
+            product_id: productId,
+            quantity: quantity,
+            price: price,
+            total: total
+          })
+        }
+      })
+    
+      // Construct the bill object
+      let bill = {
+        customer_id: customerId,
+        date: date,
+        status: status,
+        sub_total: subtotal,
+        total: total,
+        discount: discount,
+        vat_percent: vatPercent,
+        vat_amount: vatAmount,
+        sales_details: salesDetails
+      }
+    
+      // Output the bill object (you can use this data for further processing or sending to a server)
+      console.log(JSON.stringify(bill))
+    
+      // Get references to the button and spinner
+      let submitButton = document.getElementById('submit-button')
+      let buttonText = document.getElementById('button-text')
+      let spinner = document.getElementById('spinner')
+    
+      // Show spinner and disable button
+      buttonText.style.display = 'none'
+      spinner.classList.remove('hidden')
+      submitButton.disabled = true
+    
+      axios
+        .post('/sales/store-sales-data/', bill)
+        .then(function (response) {
+          // Handle success
+          console.log(response.data)
+          // Optionally, you can perform additional actions here after successfully storing the data
+          window.location.href = `/sales/view-sales-invoice/${response.data.sales_id}`;
+        })
+        .catch(function (error) {
+          // Handle error
+          console.error(error)
+          // Optionally, you can perform additional actions here if the request fails
+        })
+        .finally(function () {
+          // Hide spinner and enable button
+          buttonText.style.display = 'inline'
+          spinner.classList.add('hidden')
+          submitButton.disabled = false
+        })
     }
-</script>
+  </script>
 {% endblock %}
