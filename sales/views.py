@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect 
 from customer.models import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -11,12 +11,25 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.template.loader import render_to_string
 from django.db.models import Sum
-
+from django.views.decorators.http import require_http_methods
+from django.db.models import Q
+from django.core.paginator import Paginator
 # Create your views here.
 def index(request):
+    sales_search_query = request.GET.get('search','')
     sales_list = Sales.objects.all()
+    if sales_search_query:
+        sales_list = sales_list.filter(
+            Q(customer__first_name__icontains=sales_search_query) |
+            Q(customer__last_name__icontains=sales_search_query)
+        )
+
+    paginator = Paginator(sales_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     sales_data = []
 
+    
     for sales in sales_list:
         total_transactions = sales.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         pending_payment = sales.total - total_transactions
@@ -27,7 +40,7 @@ def index(request):
         })
 
     return render(request, 'dashboard/pages/sales/index.html', {
-        'sales_data': sales_data,
+        'sales_data': sales_data, 'page_obj': page_obj, 'search_query': sales_search_query
     })
 
 def addNewSales(request):
@@ -205,3 +218,74 @@ def show_template(request,sales_id):
         'total_paid_amount': total_paid_amount,
         'total_due_amount': total_due_amount
     })
+
+
+def edit_sales(request, sales_id):
+    sales = get_object_or_404(Sales, pk=sales_id)
+    customers = Customer.objects.all()
+    products = Product.objects.all()
+
+    context = {
+        'sales': sales,
+        'customers' : customers,
+        'products': products
+    }
+    return render(request, 'dashboard/pages/sales/edit.html', context)
+
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_sales_data(request, sales_id):
+    try:
+        data = json.loads(request.body)
+
+        customer_id = data.get('customer_id')
+        sales_date = data.get('date')
+        status = data.get('status')
+        sub_total = data.get('sub_total')
+        total = data.get('total')
+        discount = data.get('discount')
+        vat_percent = data.get('vat_percent')
+        vat_amount = data.get('vat_amount')
+        sales_details = data.get('sales_details', [])
+
+        sales = Sales.objects.get(id=sales_id)
+        sales.customer_id = customer_id
+        sales.sales_date = sales_date
+        sales.status = status
+        sales.sub_total = sub_total
+        sales.total = total
+        sales.discount = discount
+        sales.vat_percent = vat_percent
+        sales.vat_amount = vat_amount
+        sales.save()
+
+        SalesDetail.objects.filter(sales=sales).delete()
+
+        for detail in sales_details:
+            SalesDetail.objects.create(
+                sales=sales,
+                product_id=detail.get('product_id'),
+                quantity=detail.get('quantity'),
+                price=detail.get('price'),
+                total=detail.get('total')
+            )
+
+        return JsonResponse({'message': 'Sales data updated successfully', 'sales_id': sales.id}, status=200)
+
+    except Sales.DoesNotExist:
+        return JsonResponse({'error': 'Sales record not found'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+def delete_sales(request, sales_id):
+    if request.method == 'POST':
+        deleteSales = get_object_or_404(Sales, pk=sales_id)
+        deleteSales.delete()
+
+        return redirect('sales-index')
+    
+    return redirect('sales-index')
