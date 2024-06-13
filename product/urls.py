@@ -10,6 +10,4 @@ urlpatterns = [
     path('delete-product/<int:id>/',deleteProduct, name='delete-product')
 
 
-
-
 ]
