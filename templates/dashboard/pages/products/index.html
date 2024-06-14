@@ -50,9 +50,10 @@
               <th
                 class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Stock</th>
-              <th
-                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Is Recurring</th>
+                <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Recurring Period</th>
               <th
                 class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                 width="18%">Action</th>
@@ -80,6 +81,20 @@
                 </p>
               </td>
               <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap">
+              {% if product.recurring_period == 'monthly' %}
+                  <span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Monthly</span>
+              {% elif product.recurring_period == 'quarterly' %}
+                  <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Quarterly</span>
+              {% elif product.recurring_period == 'yearly' %}
+                  <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Yearly</span>
+              {% else %}
+                  <span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">No Period Selected</span>
+              {% endif %}
+                </p>
+              </td>
+
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                 <a href="{%url 'edit-product' product.id %}" class="mx-1 hover:text-blue-500">Edit</a>
                 <a href="" class="mx-1 hover:text-green-500">View</a>
                 <a href="" class="mx-1 hover:text-red-500 delete-button" data-tw-toggle="modal"
@@ -92,8 +107,7 @@
         </table>
         <!-- Pagination, if needed -->
         <div class="px-5 py-5 flex flex-col xs:flex-row items-center xs:justify-between">
-          <span class="text-xs xs:text-sm text-gray-900">Showing {{ products.start_index }} to {{ products.end_index }}
-            of {{ products.paginator.count }} entries</span>
+          <span class="text-xs xs:text-sm text-gray-900">Showing {{ products.start_index }} to {{ products.end_index }} of {{ products.paginator.count }} entries</span>
           <div class="flex items-center mt-4">
             <div class="mr-2">
               {% if products.has_previous %}
@@ -106,9 +120,7 @@
               {% if products.number == num %}
               <span class="text-sm text-indigo-600 font-semibold py-2 px-4 rounded">{{ num }}</span>
               {% else %}
-              <a href="?page={{ num }}"
-                class="text-sm text-indigo-600 transition duration-150 hover:bg-indigo-500 hover:text-white bg-indigo-50 font-semibold py-2 px-4 rounded">{{
-                num }}</a>
+              <a href="?page={{ num }}" class="text-sm text-indigo-600 transition duration-150 hover:bg-indigo-500 hover:text-white bg-indigo-50 font-semibold py-2 px-4 rounded">{{ num }}</a>
               {% endif %}
               {% endfor %}
             </div>

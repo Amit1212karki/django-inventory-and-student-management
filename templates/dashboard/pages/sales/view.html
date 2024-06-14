@@ -113,7 +113,14 @@
         </div>
         <div class="flex justify-between py-2">
           <span>VAT:</span>
-          <span>{{ sales.vat_amount }}</span>
+          <span>
+          {% if sales.vat_amount is not None %}
+          {{ sales.vat_amount }}
+          {% else %}
+           0
+           {% endif %}
+           </span>
+         
         </div>
         <div class="flex justify-between py-2 font-bold">
           <span>Total:</span>

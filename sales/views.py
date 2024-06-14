@@ -17,20 +17,22 @@ from django.core.paginator import Paginator
 # Create your views here.
 def index(request):
     sales_search_query = request.GET.get('search','')
-    sales_list = Sales.objects.all()
+    sales_list = Sales.objects.all().order_by('-created_at')
     if sales_search_query:
-        sales_list = sales_list.filter(
+        filtered_sales = sales_list.filter(
             Q(customer__first_name__icontains=sales_search_query) |
             Q(customer__last_name__icontains=sales_search_query)
         )
+    else:
+        filtered_sales = sales_list
 
-    paginator = Paginator(sales_list, 10)
+    paginator = Paginator(filtered_sales, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     sales_data = []
 
     
-    for sales in sales_list:
+    for sales in filtered_sales:
         total_transactions = sales.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         pending_payment = sales.total - total_transactions
         sales_data.append({
@@ -289,3 +291,27 @@ def delete_sales(request, sales_id):
         return redirect('sales-index')
     
     return redirect('sales-index')
+
+
+def transactionIndex(request):
+    sales_queryset = Sales.objects.all()
+    transactions_data = []
+
+    for sale in sales_queryset:
+        sales_details = sale.details.all()  # Assuming you have a related_name 'details'
+        transaction_details = sale.transactions.all()
+
+        total_paid_amount = transaction_details.aggregate(total_paid=Sum('amount')).get('total_paid') or 0
+        total_due_amount = sale.total - total_paid_amount
+
+        transactions_data.append({
+            'sale': sale,
+            'sales_details': sales_details,
+            'transaction_details': transaction_details,
+            'total_paid_amount': total_paid_amount,
+            'total_due_amount': total_due_amount
+        })
+
+    return render(request, 'dashboard/pages/transaction/index.html', {
+        'transactions_data': transactions_data,
+    })

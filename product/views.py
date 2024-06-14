@@ -6,7 +6,7 @@ from django.db.models import Q
 def index(request):
 
     product_search_query = request.GET.get('search', '')  # Get search query or default to empty string
-    all_products = Product.objects.all()
+    all_products = Product.objects.all().order_by('-created_at')
     if product_search_query:
         products = all_products.filter(Q(name__icontains=product_search_query) | Q(price__icontains=product_search_query))
     else:
@@ -28,7 +28,7 @@ def addProduct(request):
         product_price = request.POST.get('product_price')
         product_image = None if not request.FILES.get('product_image') else request.FILES.get('product_image')
         product_file = None if not request.FILES.get('product_file') else request.FILES.get('product_file')
-        inventory_count = request.POST.get('inventory_count')
+        inventory_count = None if not request.POST.get('inventory_count') else request.POST.get('inventory_count')
         is_recurring = request.POST.get('isRecurring')
         recurring_period = request.POST.get('recurringPeriod') if is_recurring == 'True' else None
         description = request.POST.get('description')
@@ -63,17 +63,17 @@ def updateProduct(request, id):
         updateProduct.name = request.POST.get('product_name')
         updateProduct.price = request.POST.get('product_price')
         updateProduct.description = request.POST.get('description')
-        updateProduct.inventory_count = request.POST.get('inventory_count')
-        updateProduct.subscription_period = request.POST.get('recurringPeriod') if  updateProduct.isrecurring == 'True' else None
+        updateProduct.inventory_count = None if not request.POST.get('inventory_count') else request.POST.get('inventory_count')
+        updateProduct.recurring_period = request.POST.get('recurringPeriod') if  updateProduct.isrecurring == 'True' else None
         updateProduct.image = None if not request.FILES.get('product_image') else request.FILES.get('product_image')
         updateProduct.file = None if not request.FILES.get('product_file') else request.FILES.get('product_file')
         is_recurring = request.POST.get('isRecurring')
 
         updateProduct.isrecurring = 'Y' if is_recurring == 'True' else 'N'
         if updateProduct.isrecurring == 'Y':
-            updateProduct.subscription_period = request.POST.get('recurringPeriod')
+            updateProduct.recurring_period = request.POST.get('recurringPeriod')
         else:
-            updateProduct.subscription_period = None
+            updateProduct.recurring_period = None
 
 
         updateProduct.save()

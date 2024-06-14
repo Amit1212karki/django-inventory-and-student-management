@@ -11,7 +11,7 @@ from django.db.models import Q
 def studentIndex(request):
     search_query = request.GET.get('search', '')  # Get search query or default to empty string
 
-    students_list = Customer.objects.filter(customer_type='student')
+    students_list = Customer.objects.filter(customer_type='student').order_by('-created_at')
 
     if search_query:
         students_list = students_list.filter(Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(email__icontains=search_query))  # Filter based on search terms
@@ -26,7 +26,7 @@ def studentIndex(request):
     return render(request, 'dashboard/pages/students/index.html', context)
 
 def clientIndex(request):
-    clients = Customer.objects.filter(customer_type='client')
+    clients = Customer.objects.filter(customer_type='client').order_by('-created_at')
     client_search_query = request.GET.get('search', '')
 
     if client_search_query:
@@ -139,14 +139,14 @@ def addClient(request):
             last_name = request.POST.get('last_name')
             image = None if not request.FILES.get('profile_image') else request.FILES.get('profile_image')
             email = request.POST.get('email')
-            gender = request.POST.get('gender')
+           
             phone = request.POST.get('phone')
             address = request.POST.get('address') 
             document = None if not request.FILES.get('legal_document') else request.FILES.get('legal_document')
             company = request.POST.get('company')
             panno = request.POST.get('panno')
 
-            if not first_name or not last_name or not email or not gender or not phone or not address or not company or not panno:
+            if not first_name or not last_name or not email or not phone or not address or not company or not panno:
                 messages.error(request, 'Please fill in all the required fields.')
                 return redirect('add-client')
             
@@ -155,7 +155,6 @@ def addClient(request):
                 last_name=last_name,
                 profile_image=image,
                 email=email,
-                gender=gender,
                 phone=phone,
                 address=address,
                 customer_type='client',
@@ -187,7 +186,7 @@ def updateClient(request, id):
         if request.FILES.get('profile_image'):
             updateClient.profile_image = request.FILES.get('profile_image')
         updateClient.email = request.POST.get('email')
-        updateClient.gender = request.POST.get('gender')
+        
         updateClient.phone = request.POST.get('phone')
         updateClient.address = request.POST.get('address')
         updateClient.vat_pan_no = request.POST.get('panno')
@@ -195,7 +194,7 @@ def updateClient(request, id):
         if request.FILES.get('legal_document'):
             updateClient.legal_document = request.FILES.get('legal_document')
 
-        if not updateClient.first_name or not updateClient.last_name or not updateClient.email or not updateClient.gender or not updateClient.phone or not updateClient.address or not updateClient.vat_pan_no or not updateClient.company:
+        if not updateClient.first_name or not updateClient.last_name or not updateClient.email  or not updateClient.phone or not updateClient.address or not updateClient.vat_pan_no or not updateClient.company:
             messages.error(request, 'Please fill in all the required fields.')
             return redirect('update-client', id=id)
 
