@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 🔑 Setup SSH
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: oracle.mysecurecloudserver.com
           username: hunchhan
