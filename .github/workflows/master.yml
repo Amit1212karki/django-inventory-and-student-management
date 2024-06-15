@@ -18,6 +18,7 @@ jobs:
           host: oracle.mysecurecloudserver.com
           username: hunchhan
           key: "-xq9f2B9CY[g1F"
+          port: 1980
           script: |
             cd ~/billings
             git pull origin master
