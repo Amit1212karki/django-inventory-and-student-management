@@ -1,21 +1,23 @@
 on:
-    push:
-      branches:
-        - "master"
+  push:
+    branches:
+      - "master"
 
 name: 🚀 Deploy website on push
 jobs:
-    web-deploy:
-      name: 🎉 Deploy
-      runs-on: ubuntu-latest
-      steps:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
-  
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+
+      - name: 🔑 Setup SSH
+        uses: appleboy/ssh-action@master
         with:
-          server: 167.235.9.123
-          username: billings@hunchhadigital.com.np
-          password: Ultimate@22
-  
+          host: oracle.mysecurecloudserver.com
+          username: hunchhan
+          key: "-xq9f2B9CY[g1F"
+          script: |
+            cd ~/billings
+            git pull origin master
