@@ -1,24 +1,22 @@
+name: remote ssh command on vps
 on:
   push:
     branches:
-      - "master"
+      - master
 
-name: 🚀 Deploy website on push
 jobs:
-  web-deploy:
-    name: 🎉 Deploy
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Get latest code
-        uses: actions/checkout@v2
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: oracle.mysecurecloudserver.com
+        username: hunchhan
+        password: "-xq9f2B9CY[g1F"
+        port: 1980
+        script: |
+          cd ~/billings
+          git pull origin master
 
-      - name: 🔑 Setup SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: oracle.mysecurecloudserver.com
-          username: hunchhan
-          key: "-xq9f2B9CY[g1F"
-          port: 1980
-          script: |
-            cd ~/billings
-            git pull origin master
