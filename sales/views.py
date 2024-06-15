@@ -109,6 +109,10 @@ def view_sales_invoice(request, sales_id):
     
     # Calculate total due amount
     total_due_amount = sales.total - total_paid_amount
+
+    # Format the amounts to two decimal places
+    total_paid_amount = round(total_paid_amount, 2)
+    total_due_amount = round(total_due_amount, 2)
     
     return render(request, 'dashboard/pages/sales/view.html', {
         'sales': sales,

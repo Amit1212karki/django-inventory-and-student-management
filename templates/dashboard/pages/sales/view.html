@@ -231,11 +231,11 @@
 
   function exportPDF() {
     // Create a new jsPDF instance with landscape orientation
-    const doc = new jsPDF('landscape');
+    const doc = new jsPDF('portrait');
 
     // Get the width and height of the A4 paper
-    const a4Width = 295; // A4 width in mm
-    const a4Height = 210; // A4 height in mm
+    const a4Width = 210; // A4 width in mm
+    const a4Height = 200; // A4 height in mm
 
     // Get the width and height of the bill container
     const billContainerWidth = document.getElementById('bill-container').offsetWidth;
