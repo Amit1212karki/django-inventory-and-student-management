@@ -6,7 +6,92 @@
 
 {% block content %}
 <h2 class="text-xl font-semibold mb-4">Dashboard Index Page</h2>
-<p>This is the dashboard index page content.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white p-4 shadow rounded-lg">
+        <h3 class="text-lg font-semibold">Total Sales</h3>
+        <p class="text-2xl">{{ total_sales }}</p>
+    </div>
+    <div class="bg-white p-4 shadow rounded-lg">
+        <h3 class="text-lg font-semibold">Number of Transactions</h3>
+        <p class="text-2xl">{{ transaction_count }}</p>
+    </div>
+    <div class="bg-white p-4 shadow rounded-lg">
+        <h3 class="text-lg font-semibold">Outstanding Invoices</h3>
+        <p class="text-2xl">{{ outstanding_invoices }}</p>
+    </div>
+    <div class="bg-white p-4 shadow rounded-lg">
+        <h3 class="text-lg font-semibold">New Customers</h3>
+        <p class="text-2xl">{{ new_customers }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-2  gap-x-4    ">
+    <div class="bg-white p-6 shadow rounded-lg mb-6 col-span-2 h-[60vh]">
+        <h3 class="text-lg font-semibold mb-4">Sales Chart</h3>
+        <div id="salesChart"></div>
+    </div>
+
+    <div class="bg-white p-6 shadow rounded-lg mb-6">
+        <h3 class="text-lg font-semibold mb-4">Transaction Chart</h3>
+        <div id="transactionChart"></div>
+    </div>
+
+    <div class="bg-white p-6 shadow rounded-lg mb-6">
+        <h3 class="text-lg font-semibold mb-4">Top Perfoming Product</h3>
+        <div id="topSoldProduct"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    var options = {
+        chart: {
+            type: 'line',
+            height: 290
+        },
+        series: [{
+            name: 'sales',
+            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }],
+        xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        }
+    }
+
+    var chart = new ApexCharts(document.querySelector("#salesChart"), options);
+
+    chart.render();
+
+    var options = {
+        chart: {
+            type: 'line'
+        },
+        series: [{
+            name: 'sales',
+            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        }],
+        xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        }
+    }
+
+    var chart = new ApexCharts(document.querySelector("#transactionChart"), options);
+
+    chart.render();
+
+    var options = {
+        chart: {
+            type: 'donut'
+        },
+        series: [44, 55, 13, 33],
+        labels: ['Apple', 'Mango', 'Orange', 'Watermelon'],
+        xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+        }
+    }
+
+    var chart = new ApexCharts(document.querySelector("#topSoldProduct"), options);
+
+    chart.render();
+</script>
 {% endblock %}
-
-
