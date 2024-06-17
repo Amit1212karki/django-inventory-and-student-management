@@ -139,5 +139,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.hunchhadigital.com.np'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'billings@hunchhadigital.com.np'  # Your Gmail email address
-EMAIL_HOST_PASSWORD = 'Ultimate@22'  # Your Gmail password or app password
+EMAIL_HOST_USER = 'billings@hunchhadigital.com.np'  
+EMAIL_HOST_PASSWORD = 'Ultimate@22'  

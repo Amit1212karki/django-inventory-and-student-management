@@ -158,6 +158,7 @@ def send_bill(request):
                 subject='Your Bill',
                 body=email_body,
                 to=[customer_email],
+                from_email='billings@hunchhadigital.com.np'
             )
             email.content_subtype = 'html'  # Set the email content type to HTML
             email.send()
