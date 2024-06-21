@@ -305,6 +305,7 @@ def transactionIndex(request):
     for sale in sales_queryset:
         sales_details = sale.details.all()  # Assuming you have a related_name 'details'
         transaction_details = sale.transactions.all()
+        
 
         total_paid_amount = transaction_details.aggregate(total_paid=Sum('amount')).get('total_paid') or 0
         total_due_amount = sale.total - total_paid_amount

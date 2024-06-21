@@ -14,8 +14,8 @@ urlpatterns = [
     path('delete-sales-data/<int:sales_id>/', delete_sales, name='delete-sales-data'),
     path('view-sales-invoice/<int:sales_id>/', view_sales_invoice),
     path('send-bill/', send_bill),
-    path('save-transaction/<int:sales_id>', save_transaction),
-    path('email-temp/<int:sales_id>', show_template),
+    path('save-transaction/<int:sales_id>/', save_transaction),
+    path('email-temp/<int:sales_id>/', show_template),
 
 
     path('transaction-index/', transactionIndex, name='transaction-index')

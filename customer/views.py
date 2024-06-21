@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 from .models import *
+from sales.models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from workspace.models import Workspace
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Sum
 # Create your views here.
 
 def studentIndex(request):
@@ -24,6 +25,38 @@ def studentIndex(request):
     context = {'page_obj': page_obj, 'search_query': search_query}  # Add search query to context
 
     return render(request, 'dashboard/pages/students/index.html', context)
+
+
+def viewStudent(request, id):
+    customer = Customer.objects.get(id=id)
+    raw_sells_data = customer.sales.all()
+    sales_data = []
+    transaction_data = []
+    total_pending_amount = 0
+
+    for sale in raw_sells_data:
+        total_transactions = sale.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
+        pending_payment = sale.total - total_transactions
+        total_pending_amount += pending_payment
+        sales_data.append({
+            'sales': sale,
+            'total_transactions': total_transactions,
+            'pending_payment': pending_payment
+        })
+
+        # Append all transactions related to this sale to the transaction_data list
+        transactions = sale.transactions.all()
+        for transaction in transactions:
+            transaction_data.append(transaction)
+
+    context = {
+        'customer': customer,
+        'sales_data': sales_data,
+        'transaction_data': transaction_data,
+        'total_pending_amount': total_pending_amount,
+    }
+
+    return render(request, 'dashboard/pages/students/view.html', context)
 
 def clientIndex(request):
     clients = Customer.objects.filter(customer_type='client').order_by('-created_at')

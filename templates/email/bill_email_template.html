@@ -1,8 +1,10 @@
-<!DOCTYPE html>
-<html>
+{% extends 'dashboard/layout/main.html' %}
 
-<head>
-    <meta charset="UTF-8">
+{% block title %}
+{{ block.super }} - Index
+{% endblock %}
+
+{% block content %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,7 +51,6 @@
             margin: 0;
         }
     </style>
-</head>
 
 <body>
     <div class="container">
@@ -154,4 +155,4 @@
     </div>
 </body>
 
-</html>
+{% endblock %}
