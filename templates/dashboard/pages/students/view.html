@@ -2,7 +2,7 @@
 {% extends 'dashboard/layout/main.html' %}
 
 {% block title %}
-{{ block.super }} - Invoice Details
+{{ block.super }} - Student Details
 {% endblock %}
 
 {% block content %}
@@ -28,120 +28,69 @@
 </style>
 <div class="container mx-auto p-6">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold mb-4">Sales Invoice</h1>
+    <h1 class="text-2xl font-bold mb-4">Student Details</h1>
     <!-- Action Buttons -->
-    <div class="flex justify-end space-x-4 mb-4">
-      <button id="print-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Print
-        Bill</button>
-      <button id="export-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Export
-        PDF</button>
-      <button id="send-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-        <span id="button-text">Send Bill</span>
-        <svg id="spinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg"
-          fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C6.268 0 0 6.268 0 12h4zm2 5.291A7.963 7.963 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
-        </svg>
-      </button>
-      <button id="record-transaction-button"
-        class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Record Transaction</button>
-    </div>
+
   </div>
   <div id="bill-container" class="p-6 rounded-lg bg-white mb-6">
-    <div class="flex justify-between items-center mb-6">
-      <div class="">
-        <!-- <img src="" alt="Company Logo" class="h-16 w-auto mb-2"> -->
-        <p class="font-bold text-2xl">Hunchha Digital</p>
-        <p>Address: Itahari Sunsari, Nepal</p>
-        <p>PAN No: 619870061</p>
+    <div class="flex justify-between  mb-6">
+      <div class="flex gap-2">
+        <img src="{{ customer.profile_image.url }}" alt="customer image" class="h-30 w-32 object-contain mb-2">
+        <div class="customer-details">
+          <p class="font-bold text-2xl">{{customer.first_name}}{{customer.last_name}}</p>
+          <p>Address: {{customer.address}}</p>
+          <p>Contact No: {{customer.phone}}</p>
+          <p>Email: {{customer.email}}</p>
+          <p>Parents Name: {{customer.parents_name}}</p>
+          <p>Parents Contact No: {{customer.parents_phone_no}}</p>
+
+
+        </div>
       </div>
       <div class="">
-        <h2 class="text-2xl font-semibold">Invoice</h2>
-        <p>Date: {{ sales.sales_date|date:"Y-m-d" }}</p>
-        <p>Invoice Number: {{ sales.id }}</p>
+        <h2 class="text-2xl font-semibold">Total Receiveable</h2>
+        <p>NPR {{ total_pending_amount }}</p>
       </div>
     </div>
     <!-- Bill Header -->
-    <div class="flex justify-between items-center mb-6">
-      <div>
-        <h2 class="text-xl font-semibold">Customer</h2>
-        <p class="mb-1">Name: {{ sales.customer.first_name }} {{ sales.customer.last_name }}</p>
-        <p class="mb-1">Address: {{ sales.customer.address }} </p>
-        <p class="mb-1">Pan/Vat No: {{ sales.customer.pan_vat_no }} </p>
-        Status:
-        <span
-          class="badge uppercase px-3 py-1 my-2 text-white {% if sales.status == 'draft' %}bg-gray-400{% elif sales.status == 'sent' %}bg-blue-400{% elif sales.status == 'completed' %}bg-green-400{% elif sales.status == 'cancelled' %}bg-red-400{% endif %}">
-          {{ sales.status }}
-        </span>
-      </div>
-    </div>
+
 
     <!-- Bill Table -->
+    <h1 class="text-2xl font-bold mt-5">Bills</h1>
+    <hr class="mb-6 w-[60%]">
     <table class="min-w-full bg-white">
       <thead>
-        <tr class="bg-gray-100">
-          <th class="py-2 px-4 border border-gray-200 text-start">Product</th>
-          <th class="py-2 ps-4 border border-gray-200 text-start">Quantity</th>
-          <th class="py-2 ps-4 border border-gray-200 text-start">Price</th>
+        <tr class="bg-gray-300">
+          <th class="py-2 px-4 border border-gray-200 text-start">ID</th>
+          <th class="py-2 px-4 border border-gray-200 text-start">Sales Date</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Status</th>
           <th class="py-2 ps-4 border border-gray-200 text-start">Total</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Total Transaction</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Pending Payment</th>
         </tr>
       </thead>
       <tbody>
-        {% for detail in sales_details %}
+        {% for detail in sales_data %}
         <tr>
-          <td class="border px-4 py-2 text-start">{{ detail.product.name }}</td>
-          <td class="border px-4 py-2">{{ detail.quantity }}</td>
-          <td class="border px-4 py-2">{{ detail.price }}</td>
-          <td class="border px-4 py-2">{{ detail.total }}</td>
+          <td class="border px-4 py-2 text-start"> <a href="/sales/view-sales-invoice/{{detail.sales.id}}"
+              class="text-blue-500 hover:text-blue-600">{{ detail.sales.id }}</a></td>
+          <td class="border px-4 py-2 text-start">{{ detail.sales.sales_date }}</td>
+          <td class="border px-4 py-2">{{ detail.sales.status }}</td>
+          <td class="border px-4 py-2">{{ detail.sales.total }}</td>
+          <td class="border px-4 py-2">{{ detail.total_transactions }}</td>
+          <td class="border px-4 py-2">{{ detail.pending_payment }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
 
     <!-- Bill Summary -->
-    <div class="flex justify-end mt-4">
-      <div class="w-1/2">
-        <div class="flex justify-between py-2">
-          <span>Subtotal:</span>
-          <span>{{ sales.sub_total }}</span>
-        </div>
-        <div class="flex justify-between py-2">
-          <span>Discount:</span>
-          <span>{{ sales.discount }}</span>
-        </div>
-        <div class="flex justify-between py-2">
-          <span>VAT:</span>
-          <span>
-          {% if sales.vat_amount is not None %}
-          {{ sales.vat_amount }}
-          {% else %}
-           0
-           {% endif %}
-           </span>
-         
-        </div>
-        <div class="flex justify-between py-2 font-bold">
-          <span>Total:</span>
-          <span>{{ sales.total }}</span>
-        </div>
-        <div class="flex justify-between py-2">
-          <span>Total Paid Amount:</span>
-          <span>{{ total_paid_amount }}</span>
-        </div>
-        <!-- total due amount -->
-        <div class="flex justify-between py-2">
-          <span>Total Due Amount:</span>
-          <span>{{ total_due_amount }}</span>
-        </div>
-      </div>
-    </div>
+
     <div class="my-5"></div>
     <!-- transaction summary -->
     <h1 class="text-2xl font-bold mt-5">Payments</h1>
     <hr class="mb-6 w-[60%]">
-    <table class="min-w-[60%] bg-white">
+    <table class="min-w-full bg-white">
       <thead>
         <tr class="bg-gray-300">
           <th class="text-start border border-gray-200 px-3 py-2">Date</th>
@@ -151,7 +100,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for transaction in transaction_details %}
+        {% for transaction in transaction_data %}
         <tr>
           <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.transaction_date|date:"Y-m-d" }}</td>
           <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.amount }}</td>
@@ -329,7 +278,7 @@
     };
 
     // Send data to Django backend using Axios
-    axios.post('/sales/save-transaction/{{ sales.id }}/', data)
+    axios.post('/sales/save-transaction/{{ sales.id }}', data)
       .then(function (response) {
         console.log('Transaction saved successfully:', response.data);
         // Optionally, perform any actions after successful submission
