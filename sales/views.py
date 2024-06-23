@@ -35,6 +35,7 @@ def index(request):
     for sales in filtered_sales:
         total_transactions = sales.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         pending_payment = sales.total - total_transactions
+        
         sales_data.append({
             'sales': sales,
             'total_transactions': total_transactions,
