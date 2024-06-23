@@ -42,25 +42,77 @@
     </div>
 </div>
 
+<div id="backendPassedData" style="display: none;">{{ sales_data }}</div>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script id="sales-data" type="application/json">{{ sales_values|json_script:"sales-data" }}</script>
+<script id="sales-categories" type="application/json">{{ sales_categories|json_script:"sales-categories" }}</script>
+
 <script>
-    var options = {
-        chart: {
-            type: 'line',
-            height: 290
-        },
-        series: [{
-            name: 'sales',
-            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
-        }],
-        xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        }
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the div element by id
+        var backendPassedDataDiv = document.getElementById('backendPassedData');
 
-    var chart = new ApexCharts(document.querySelector("#salesChart"), options);
+        // Get the inner text content of the div (which contains your JSON data)
+        var salesDataJson = backendPassedDataDiv.textContent.trim();
 
-    chart.render();
+        // Parse the JSON data into a JavaScript object
+        var backendData = JSON.parse(salesDataJson);
+
+        // Define months in the correct order
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        // Initialize sales data array with zeros for all months
+        var sales = months.map(function (month) {
+            var foundItem = backendData.find(function (item) {
+                return item.month === month;
+            });
+            return foundItem ? foundItem.sales : 0;
+        });
+
+        // Example: Update your chart options with both sales and months
+        var options = {
+            series: [
+                {
+                    name: "Sales",
+                    data: sales
+                }
+            ],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            title: {
+                text: 'Product Trends by Month',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'],
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                categories: months
+            }
+        };
+
+        // Render the chart using ApexCharts
+        var chart = new ApexCharts(document.querySelector("#salesChart"), options);
+        chart.render();
+    });
 
     var options = {
         chart: {
@@ -94,4 +146,6 @@
 
     chart.render();
 </script>
+
+
 {% endblock %}

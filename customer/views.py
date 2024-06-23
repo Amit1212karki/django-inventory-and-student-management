@@ -58,6 +58,38 @@ def viewStudent(request, id):
 
     return render(request, 'dashboard/pages/students/view.html', context)
 
+def viewClient(request, id):
+    client = Customer.objects.get(id=id)
+    raw_client_sells_data = client.sales.all()
+    sales_data = []
+    transaction_data = []
+    total_pending_amount = 0
+
+    for sale in raw_client_sells_data:
+        total_transactions = sale.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
+        pending_payment = sale.total - total_transactions
+        total_pending_amount += pending_payment
+        sales_data.append({
+            'sales' : sale,
+            'total_transactions': total_transactions,
+            'pending_payment': pending_payment
+        })
+
+        transactions = sale.transactions.all()
+        for transaction in transactions:
+            transaction_data.append(transaction) 
+
+    context = {
+        'client': client,
+        'sales_data': sales_data,
+        'transaction_data': transaction_data,
+        'total_pending_amount' : total_pending_amount,
+    }
+
+    return render(request, 'dashboard/pages/clients/view.html', context)
+
+
+
 def clientIndex(request):
     clients = Customer.objects.filter(customer_type='client').order_by('-created_at')
     client_search_query = request.GET.get('search', '')
@@ -73,6 +105,9 @@ def clientIndex(request):
 
     context = {'clients': client_with_paginator, 'search_query': client_search_query} 
     return render(request, 'dashboard/pages/clients/index.html', context)
+
+
+
 
 @login_required
 def addStudent(request):
