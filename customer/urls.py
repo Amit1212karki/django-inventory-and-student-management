@@ -16,6 +16,8 @@ urlpatterns = [
     path('edit-clients-record/<int:id>/', editClient, name='edit-client'),
     path('update-clients-record/<int:id>/', updateClient, name='update-client'),
     path('delete-clients-record/<int:id>/', deleteClient, name='delete-client'),
+    path('view-client-record/<int:id>/', viewClient, name='view-client'),
+
 
 
 
