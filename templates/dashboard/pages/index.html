@@ -42,10 +42,13 @@
     </div>
 </div>
 
-<div id="backendPassedData" style="display: none;">{{ sales_data }}</div>
-<div id="backendTransactionPassedData" style="display: none;">{{ transaction_data }}</div>
 
-<div id="backendTopProductsData" style="display: none;">{{ top_products_data }}</div>
+
+<div style="display: none;">
+<div id="backendPassedData" >{{ sales_data }}</div>
+<div id="backendTransactionPassedData" >{{ transaction_data }}</div>
+<div id="backendTopProductsData" >{{ top_products_data }}</div>
+</div>
 
 
 
@@ -56,20 +59,16 @@
 <script id="sales-categories" type="application/json">{{ sales_categories|json_script:"sales-categories" }}</script>
 
 <script id="transaction-data" type="application/json">{{ transaction_values|json_script:"transaction-data" }}</script>
-<script id="transaction-categories" type="application/json">{{ transaction_categories|json_script:"transaction-categories" }}</script>
+<script id="transaction-categories"
+    type="application/json">{{ transaction_categories|json_script:"transaction-categories" }}</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Get the div element by id
         var backendPassedDataDiv = document.getElementById('backendPassedData');
-
         // Get the inner text content of the div (which contains your JSON data)
         var salesDataJson = backendPassedDataDiv.textContent.trim();
-
-        // Parse the JSON data into a JavaScript object
         var backendData = JSON.parse(salesDataJson);
-
-        // Define months in the correct order
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
         // Initialize sales data array with zeros for all months
@@ -119,11 +118,10 @@
         // Render the chart using ApexCharts
         var chart = new ApexCharts(document.querySelector("#salesChart"), options);
         chart.render();
-    
 
-    var backendTransactionPassedDataDiv = document.getElementById('backendTransactionPassedData');
-    var transactionDataJson = backendTransactionPassedDataDiv.textContent.trim();
-    var backendTransactionData = JSON.parse(transactionDataJson);
+        var backendTransactionPassedDataDiv = document.getElementById('backendTransactionPassedData');
+        var transactionDataJson = backendTransactionPassedDataDiv.textContent.trim();
+        var backendTransactionData = JSON.parse(transactionDataJson);
 
         var transactions = months.map(function (month) {
             var foundItem = backendTransactionData.find(function (item) {
@@ -171,7 +169,7 @@
         if (backendTopProductsDataDiv) {
             var topProductsDataJson = backendTopProductsDataDiv.textContent.trim();
             var topProductsData = JSON.parse(topProductsDataJson);
-            
+
             console.log('Top Products Data:', topProductsData);  // Debug statement
 
             var topProductsOptions = {
