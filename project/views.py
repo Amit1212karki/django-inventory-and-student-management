@@ -21,7 +21,8 @@ def index(request):
             error_message = "Invalid email or password."
             return render(request, 'auth/login.html', {'error_message': error_message})
     else:
-        return render(request, 'auth/login.html')@login_required
+        return render(request, 'auth/login.html')
+    
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Decimal):
