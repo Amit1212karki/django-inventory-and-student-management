@@ -43,6 +43,10 @@
 </div>
 
 <div id="backendPassedData" style="display: none;">{{ sales_data }}</div>
+<div id="backendTransactionPassedData" style="display: none;">{{ transaction_data }}</div>
+
+<div id="backendTopProductsData" style="display: none;">{{ top_products_data }}</div>
+
 
 
 
@@ -50,6 +54,9 @@
 
 <script id="sales-data" type="application/json">{{ sales_values|json_script:"sales-data" }}</script>
 <script id="sales-categories" type="application/json">{{ sales_categories|json_script:"sales-categories" }}</script>
+
+<script id="transaction-data" type="application/json">{{ transaction_values|json_script:"transaction-data" }}</script>
+<script id="transaction-categories" type="application/json">{{ transaction_categories|json_script:"transaction-categories" }}</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -112,39 +119,78 @@
         // Render the chart using ApexCharts
         var chart = new ApexCharts(document.querySelector("#salesChart"), options);
         chart.render();
+    
+
+    var backendTransactionPassedDataDiv = document.getElementById('backendTransactionPassedData');
+    var transactionDataJson = backendTransactionPassedDataDiv.textContent.trim();
+    var backendTransactionData = JSON.parse(transactionDataJson);
+
+        var transactions = months.map(function (month) {
+            var foundItem = backendTransactionData.find(function (item) {
+                return item.month === month;
+            });
+            return foundItem ? foundItem.transactions : 0;
+        });
+
+        var transactionOptions = {
+            series: [{
+                name: "Transaction",
+                data: transactions
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            title: {
+                text: 'Product Trends by Month',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'],
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                categories: months
+            }
+        };
+
+        var transactionChart = new ApexCharts(document.querySelector("#transactionChart"), transactionOptions);
+        transactionChart.render();
+        var backendTopProductsDataDiv = document.getElementById('backendTopProductsData');
+        if (backendTopProductsDataDiv) {
+            var topProductsDataJson = backendTopProductsDataDiv.textContent.trim();
+            var topProductsData = JSON.parse(topProductsDataJson);
+            
+            console.log('Top Products Data:', topProductsData);  // Debug statement
+
+            var topProductsOptions = {
+                chart: {
+                    type: 'donut'
+                },
+                series: topProductsData.values,
+                labels: topProductsData.labels,
+                xaxis: {
+                    categories: topProductsData.labels // assuming you want to show labels as categories
+                }
+            };
+
+            var topProductsChart = new ApexCharts(document.querySelector("#topSoldProduct"), topProductsOptions);
+            topProductsChart.render();
+        } else {
+            console.error('No data found for top products');
+        }
     });
-
-    var options = {
-        chart: {
-            type: 'line'
-        },
-        series: [{
-            name: 'sales',
-            data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
-        }],
-        xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        }
-    }
-
-    var chart = new ApexCharts(document.querySelector("#transactionChart"), options);
-
-    chart.render();
-
-    var options = {
-        chart: {
-            type: 'donut'
-        },
-        series: [44, 55, 13, 33],
-        labels: ['Apple', 'Mango', 'Orange', 'Watermelon'],
-        xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        }
-    }
-
-    var chart = new ApexCharts(document.querySelector("#topSoldProduct"), options);
-
-    chart.render();
 </script>
 
 
