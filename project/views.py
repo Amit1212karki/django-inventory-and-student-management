@@ -8,6 +8,7 @@ from collections import OrderedDict
 import calendar
 import json
 from decimal import Decimal
+
 def index(request):
     if request.method == 'POST':
         username = request.POST.get('username')
