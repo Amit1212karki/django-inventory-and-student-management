@@ -9,6 +9,8 @@ import calendar
 import json
 from decimal import Decimal
 import datetime
+from datetime import timedelta
+from django.utils import timezone
 
 
 def index(request):
@@ -34,7 +36,10 @@ class DecimalEncoder(json.JSONEncoder):
 
 @login_required
 def dashboard(request):
-    new_customers = Customer.objects.filter(created_at__gte=datetime.date.today()).count()
+    now = timezone.now()
+    one_week_ago = now - timedelta(days=7)
+    
+    new_customers_count = Customer.objects.filter(created_at__gte=one_week_ago).count()
     total_sales_decimal = Sales.objects.aggregate(total=Sum('total'))['total'] or Decimal('0.00')
     total_transaction_decimal = Transaction.objects.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
@@ -107,7 +112,7 @@ def dashboard(request):
         'sales_data': sales_data_json_str, 
         'transaction_data': transaction_data_json_str, 
         'top_products_data' : top_products_data_json,
-        'new_customers' : new_customers,
+        'new_customers' : new_customers_count,
     }
 
     return render(request, 'dashboard/pages/index.html', context)
