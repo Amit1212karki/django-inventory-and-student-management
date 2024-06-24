@@ -16,8 +16,6 @@ urlpatterns = [
     path('send-bill/', send_bill),
     path('save-transaction/<int:sales_id>/', save_transaction),
     path('email-temp/<int:sales_id>/', show_template),
-
-
     path('transaction-index/', transactionIndex, name='transaction-index')
 
 
