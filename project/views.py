@@ -40,7 +40,7 @@ def dashboard(request):
     now = timezone.now()
     one_week_ago = now - timedelta(days=7)
 
-    low_inventory_products = Product.objects.filter(inventory_count__lt=10)
+    low_inventory_products = Product.objects.filter(inventory_count__lt=10) | Product.objects.filter(inventory_count__isnull=True)
 
     
     new_customers_count = Customer.objects.filter(created_at__gte=one_week_ago).count()
