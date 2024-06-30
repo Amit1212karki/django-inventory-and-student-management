@@ -58,11 +58,11 @@
                     {{ product.name }}
                 </th>
                 <td class="px-6 py-4">
-                    {% if product.inventory_count %}
-                        {{ product.inventory_count }}
-                    {% else %}
-                        Inventory is Null
-                    {% endif %}
+                {% if product.inventory_count is not None %}
+                    {{ product.inventory_count }}
+                {% else %}
+                    Inventory is Null
+                {% endif %}
                 </td>
             </tr>
           {% endfor %}
