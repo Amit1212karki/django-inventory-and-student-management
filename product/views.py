@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import *
 from django.core.paginator import Paginator
 from django.db.models import Q
 # Create your views here.
-def index(request):
 
+@login_required
+def index(request):
     product_search_query = request.GET.get('search', '')  # Get search query or default to empty string
     all_products = Product.objects.all().order_by('-created_at')
     if product_search_query:

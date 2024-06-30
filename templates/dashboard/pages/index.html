@@ -27,13 +27,8 @@
 
 <div class="grid grid-cols-2  gap-x-4    ">
     <div class="bg-white p-6 shadow rounded-lg mb-6 col-span-2 h-[60vh]">
-        <h3 class="text-lg font-semibold mb-4">Sales Chart</h3>
-        <div id="salesChart"></div>
-    </div>
-
-    <div class="bg-white p-6 shadow rounded-lg mb-6">
-        <h3 class="text-lg font-semibold mb-4">Transaction Chart</h3>
-        <div id="transactionChart"></div>
+        <h3 class="text-lg font-semibold mb-4">Sales and Transactions Chart</h3>
+        <div id="combinedChart"></div>
     </div>
 
     <div class="bg-white p-6 shadow rounded-lg mb-6">
@@ -45,9 +40,9 @@
 
 
 <div style="display: none;">
-<div id="backendPassedData" >{{ sales_data }}</div>
-<div id="backendTransactionPassedData" >{{ transaction_data }}</div>
-<div id="backendTopProductsData" >{{ top_products_data }}</div>
+    <div id="backendPassedData">{{ sales_data }}</div>
+    <div id="backendTransactionPassedData">{{ transaction_data }}</div>
+    <div id="backendTopProductsData">{{ top_products_data }}</div>
 </div>
 
 
@@ -63,132 +58,186 @@
     type="application/json">{{ transaction_categories|json_script:"transaction-categories" }}</script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the div element by id
-        var backendPassedDataDiv = document.getElementById('backendPassedData');
-        // Get the inner text content of the div (which contains your JSON data)
-        var salesDataJson = backendPassedDataDiv.textContent.trim();
-        var backendData = JSON.parse(salesDataJson);
-        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+   document.addEventListener('DOMContentLoaded', function () {
+    // Get sales data
+    var backendPassedDataDiv = document.getElementById('backendPassedData');
+    var salesDataJson = backendPassedDataDiv.textContent.trim();
+    var salesData = JSON.parse(salesDataJson);
 
-        // Initialize sales data array with zeros for all months
-        var sales = months.map(function (month) {
-            var foundItem = backendData.find(function (item) {
-                return item.month === month;
-            });
-            return foundItem ? foundItem.sales : 0;
+    // Get transaction data
+    var backendTransactionPassedDataDiv = document.getElementById('backendTransactionPassedData');
+    var transactionDataJson = backendTransactionPassedDataDiv.textContent.trim();
+    var transactionData = JSON.parse(transactionDataJson);
+
+    // Prepare months array (assuming it's consistent for both sales and transactions)
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Initialize arrays for sales and transactions
+    var sales = months.map(function (month) {
+        var foundItem = salesData.find(function (item) {
+            return item.month === month;
         });
-
-        // Example: Update your chart options with both sales and months
-        var options = {
-            series: [
-                {
-                    name: "Sales",
-                    data: sales
-                }
-            ],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'straight'
-            },
-            title: {
-                text: 'Product Trends by Month',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
-            },
-            xaxis: {
-                categories: months
-            }
-        };
-
-        // Render the chart using ApexCharts
-        var chart = new ApexCharts(document.querySelector("#salesChart"), options);
-        chart.render();
-
-        var backendTransactionPassedDataDiv = document.getElementById('backendTransactionPassedData');
-        var transactionDataJson = backendTransactionPassedDataDiv.textContent.trim();
-        var backendTransactionData = JSON.parse(transactionDataJson);
-
-        var transactions = months.map(function (month) {
-            var foundItem = backendTransactionData.find(function (item) {
-                return item.month === month;
-            });
-            return foundItem ? foundItem.transactions : 0;
-        });
-
-        var transactionOptions = {
-            series: [{
-                name: "Transaction",
-                data: transactions
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'straight'
-            },
-            title: {
-                text: 'Product Trends by Month',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
-            },
-            xaxis: {
-                categories: months
-            }
-        };
-
-        var transactionChart = new ApexCharts(document.querySelector("#transactionChart"), transactionOptions);
-        transactionChart.render();
-        var backendTopProductsDataDiv = document.getElementById('backendTopProductsData');
-        if (backendTopProductsDataDiv) {
-            var topProductsDataJson = backendTopProductsDataDiv.textContent.trim();
-            var topProductsData = JSON.parse(topProductsDataJson);
-
-            console.log('Top Products Data:', topProductsData);  // Debug statement
-
-            var topProductsOptions = {
-                chart: {
-                    type: 'donut'
-                },
-                series: topProductsData.values,
-                labels: topProductsData.labels,
-                xaxis: {
-                    categories: topProductsData.labels // assuming you want to show labels as categories
-                }
-            };
-
-            var topProductsChart = new ApexCharts(document.querySelector("#topSoldProduct"), topProductsOptions);
-            topProductsChart.render();
-        } else {
-            console.error('No data found for top products');
-        }
+        return foundItem ? foundItem.sales : 0;
     });
+
+    var transactions = months.map(function (month) {
+        var foundItem = transactionData.find(function (item) {
+            return item.month === month;
+        });
+        return foundItem ? foundItem.transactions : 0;
+    });
+
+    // Combine sales and transactions into a single dataset
+    var combinedData = [
+        {
+            name: "Sales",
+            data: sales
+        },
+        {
+            name: "Transactions",
+            data: transactions
+        }
+    ];
+
+    // Options for the combined chart
+    var combinedOptions = {
+        series: combinedData,
+        chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                enabled: true,
+                type: 'x',
+                autoScaleYaxis: true
+            },
+            toolbar: {
+                autoSelected: 'zoom'
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight'
+        },
+        tooltip: {
+            shared: true,
+            intersect: false,
+            y: {
+                formatter: function (value) {
+                    return value.toFixed(2); // Format tooltip values as needed
+                }
+            }
+        },
+        xaxis: {
+            categories: months,
+            title: {
+                text: 'Months'
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Amount (NPR)'
+            }
+        },
+        title: {
+            text: 'Sales and Transactions by Month',
+            align: 'left'
+        },
+        grid: {
+            borderColor: '#e0e0e0',
+            row: {
+                colors: ['#f3f3f3', 'transparent'],
+                opacity: 0.5
+            },
+        },
+        fill: {
+            opacity: 0.8,
+            type: 'solid'
+        },
+        animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+                enabled: true,
+                delay: 150
+            },
+            dynamicAnimation: {
+                enabled: true,
+                speed: 350
+            }
+        },
+        responsive: [{
+            breakpoint: 768,
+            options: {
+                chart: {
+                    height: 300
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }],
+        legend: {
+            position: 'top',
+            onItemClick: {
+                toggleDataSeries: true
+            }
+        }
+    };
+
+    // Render the combined chart using ApexCharts
+    var combinedChart = new ApexCharts(document.querySelector("#combinedChart"), combinedOptions);
+    combinedChart.render();
+
+    // Handling top products chart (if needed)
+    var backendTopProductsDataDiv = document.getElementById('backendTopProductsData');
+    if (backendTopProductsDataDiv) {
+        var topProductsDataJson = backendTopProductsDataDiv.textContent.trim();
+        var topProductsData = JSON.parse(topProductsDataJson);
+
+        console.log('Top Products Data:', topProductsData);  // Debug statement
+
+        var topProductsOptions = {
+            chart: {
+                type: 'donut'
+            },
+            series: topProductsData.values,
+            labels: topProductsData.labels,
+            xaxis: {
+                categories: topProductsData.labels // assuming you want to show labels as categories
+            }
+        };
+
+        var topProductsChart = new ApexCharts(document.querySelector("#topSoldProduct"), topProductsOptions);
+        topProductsChart.render();
+    } else {
+        console.error('No data found for top products');
+    }
+
+    
+    git ommi// Example: Button or timer to trigger data update
+    document.getElementById('updateDataButton').addEventListener('click', function () {
+        // Simulate updating data
+        // Replace with actual data fetching and update logic
+        updateChartData();
+    });
+
+    // Example function to fetch and update data
+    function updateChartData() {
+        // Fetch updated sales and transaction data from backend
+        // Update 'salesData' and 'transactionData' arrays
+        // Rebuild 'combinedData' and update chart using ApexCharts methods
+        // For demonstration, let's assume updating sales data only
+        salesData.forEach(function (item, index) {
+            sales[index] = Math.random() * 1000; // Update with new sales data
+        });
+
+        combinedChart.updateSeries([{ data: sales }]);
+    }
+});
+
 </script>
 
 
