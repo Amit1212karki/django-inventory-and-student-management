@@ -23,6 +23,7 @@
         <h3 class="text-lg font-semibold">New Customers</h3>
         <p class="text-xl">{{ new_customers }}</p>
     </div>
+    
 </div>
 
 <div class="grid grid-cols-2  gap-x-4    ">
@@ -35,6 +36,37 @@
         <h3 class="text-lg font-semibold mb-4">Top Perfoming Product</h3>
         <div id="topSoldProduct"></div>
     </div>
+    
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Product name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Inventory Count
+                </th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in inventory_product %}
+            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {{ product.name }}
+                </th>
+                <td class="px-6 py-4">
+                    {{ product.inventory_count }}
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    
 </div>
 
 
@@ -216,8 +248,7 @@
         console.error('No data found for top products');
     }
 
-    
-    git ommi// Example: Button or timer to trigger data update
+    // Example: Button or timer to trigger data update
     document.getElementById('updateDataButton').addEventListener('click', function () {
         // Simulate updating data
         // Replace with actual data fetching and update logic
