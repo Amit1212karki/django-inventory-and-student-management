@@ -26,7 +26,7 @@
     
 </div>
 
-<div class="grid grid-cols-2  gap-x-4    ">
+<div class="grid grid-cols-2  gap-x-4">
     <div class="bg-white p-6 shadow rounded-lg mb-6 col-span-2 h-[60vh]">
         <h3 class="text-lg font-semibold mb-4">Sales and Transactions Chart</h3>
         <div id="combinedChart"></div>
@@ -61,7 +61,7 @@
                 {% if product.inventory_count is not None %}
                     {{ product.inventory_count }}
                 {% else %}
-                    Inventory is Null
+                    Inventory is Empty
                 {% endif %}
                 </td>
             </tr>
