@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect 
+from django.contrib.auth.decorators import login_required
 from customer.models import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -15,6 +16,8 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Q
 from django.core.paginator import Paginator
 # Create your views here.
+
+@login_required
 def index(request):
     sales_search_query = request.GET.get('search','')
     sales_list = Sales.objects.all().order_by('-created_at')
@@ -35,7 +38,6 @@ def index(request):
     for sales in filtered_sales:
         total_transactions = sales.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         pending_payment = sales.total - total_transactions
-        
         sales_data.append({
             'sales': sales,
             'total_transactions': total_transactions,

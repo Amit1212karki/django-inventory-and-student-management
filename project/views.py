@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.decorators import login_required
 from sales.models import *
 from django.db.models import Sum
@@ -8,6 +8,12 @@ from collections import OrderedDict
 import calendar
 import json
 from decimal import Decimal
+import datetime
+from datetime import timedelta
+from django.utils import timezone
+from product.models import *
+
+
 def index(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -31,6 +37,12 @@ class DecimalEncoder(json.JSONEncoder):
 
 @login_required
 def dashboard(request):
+    now = timezone.now()
+    one_week_ago = now - timedelta(days=7)
+
+    low_inventory_products = Product.objects.filter(inventory_count__lt=10) | Product.objects.filter(inventory_count=0) | Product.objects.filter(inventory_count__isnull=True)
+    
+    new_customers_count = Customer.objects.filter(created_at__gte=one_week_ago).count()
     total_sales_decimal = Sales.objects.aggregate(total=Sum('total'))['total'] or Decimal('0.00')
     total_transaction_decimal = Transaction.objects.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
@@ -64,11 +76,53 @@ def dashboard(request):
     # Use the custom JSON encoder to serialize sales_data_json
     sales_data_json_str = json.dumps(sales_data_json, cls=DecimalEncoder)
 
+    monthly_transactions = Transaction.objects.annotate(month=TruncMonth('transaction_date')).values('month').annotate(total=Sum('amount')).order_by('month')
+
+    transaction_dict = OrderedDict()
+    for transaction in monthly_transactions:
+        month_str = transaction['month'].strftime("%b")  # Format date as month abbreviation
+        transaction_dict[month_str] = transaction['total']
+    
+    for month_num in range(1, 13):
+        month_str = calendar.month_abbr[month_num]
+        if month_str not in transaction_dict:
+            transaction_dict[month_str] = 0
+
+    transaction_values = list(transaction_dict.values())
+    transaction_categories = list(transaction_dict.keys())
+
+    transaction_data_json = []
+    for i in range(len(transaction_values)):
+        transaction_data_json.append({'transactions': transaction_values[i], 'month': transaction_categories[i]})
+
+    transaction_data_json_str = json.dumps(transaction_data_json, cls=DecimalEncoder)
+
+
+    top_products = SalesDetail.objects.values('product__name').annotate(total_sales=Sum('total')).order_by('-total_sales')[:5]
+    top_products_dict = OrderedDict()
+    for product in top_products:
+        top_products_dict[product['product__name']] = product['total_sales']
+
+    top_products_labels = list(top_products_dict.keys())
+    top_products_values = list(top_products_dict.values())
+
+    top_products_data_json = json.dumps({'labels': top_products_labels, 'values': top_products_values}, cls=DecimalEncoder)
+
     context = {
         'total_sales': total_sales,
         'total_transaction': total_transaction,
         'total_pending_amount': total_pending_amount,
-        'sales_data': sales_data_json_str,  # Convert to JSON format using custom encoder
+        'sales_data': sales_data_json_str, 
+        'transaction_data': transaction_data_json_str, 
+        'top_products_data' : top_products_data_json,
+        'new_customers' : new_customers_count,
+         'inventory_product' : low_inventory_products,
     }
 
     return render(request, 'dashboard/pages/index.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+
