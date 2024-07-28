@@ -43,11 +43,12 @@ def index(request):
             'total_transactions': total_transactions,
             'pending_payment': pending_payment
         })
+        context = {'sales_data': sales_data, 'page_obj': page_obj, 'search_query': sales_search_query}
 
-    return render(request, 'dashboard/pages/sales/index.html', {
-        'sales_data': sales_data, 'page_obj': page_obj, 'search_query': sales_search_query
-    })
+    return render(request, 'dashboard/pages/sales/index.html', context)
 
+
+@login_required
 def addNewSales(request):
     customers = Customer.objects.all()
     products = Product.objects.all()
@@ -59,6 +60,7 @@ def addNewSales(request):
     }
     return render(request, 'dashboard/pages/sales/add.html', context)
 
+@login_required
 @csrf_exempt  # You may need to disable CSRF protection for this view if you're sending requests from another domain
 def store_sales_data(request):
     if request.method == 'POST':
@@ -101,7 +103,9 @@ def store_sales_data(request):
         return JsonResponse({'message': 'Sales data saved successfully','sales_id': sales.id}, status=200)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
-    
+
+
+@login_required
 def view_sales_invoice(request, sales_id):
     sales = get_object_or_404(Sales, id=sales_id)
     sales_details = sales.details.all()
@@ -125,6 +129,8 @@ def view_sales_invoice(request, sales_id):
         'total_due_amount': total_due_amount
     })
 
+
+@login_required
 @csrf_exempt
 def send_bill(request):
     if request.method == 'POST':
@@ -178,6 +184,7 @@ def send_bill(request):
         # Return a "Method Not Allowed" response for requests other than POST
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
+@login_required
 @csrf_exempt
 def save_transaction(request,sales_id):
     if request.method == 'POST':
@@ -211,7 +218,8 @@ def save_transaction(request,sales_id):
     else:
         # Return a "Method Not Allowed" response for requests other than POST
         return JsonResponse({'error': 'Method not allowed'}, status=405)
-    
+
+@login_required   
 def show_template(request,sales_id):
     sales = get_object_or_404(Sales, id=sales_id)
     sales_details = sales.details.all()
@@ -229,7 +237,7 @@ def show_template(request,sales_id):
         'total_due_amount': total_due_amount
     })
 
-
+@login_required
 def edit_sales(request, sales_id):
     sales = get_object_or_404(Sales, pk=sales_id)
     customers = Customer.objects.all()
@@ -242,7 +250,7 @@ def edit_sales(request, sales_id):
     }
     return render(request, 'dashboard/pages/sales/edit.html', context)
 
-
+@login_required
 @csrf_exempt
 @require_http_methods(["PUT"])
 def update_sales_data(request, sales_id):
@@ -290,7 +298,7 @@ def update_sales_data(request, sales_id):
         return JsonResponse({'error': str(e)}, status=500)
     
 
-
+@login_required
 def delete_sales(request, sales_id):
     if request.method == 'POST':
         deleteSales = get_object_or_404(Sales, pk=sales_id)
@@ -301,15 +309,28 @@ def delete_sales(request, sales_id):
     return redirect('sales-index')
 
 
+@login_required
 def transactionIndex(request):
+    search_query = request.GET.get('search', '')
     sales_queryset = Sales.objects.all()
+
+    if search_query:
+        sales_queryset = sales_queryset.filter(
+            Q(customer__first_name__icontains=search_query) |
+            Q(customer__last_name__icontains=search_query) |
+            Q(customer__customer_type__icontains=search_query)
+        )
+
+    paginator = Paginator(sales_queryset, 10)  # 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     transactions_data = []
 
-    for sale in sales_queryset:
+    for sale in page_obj:
         sales_details = sale.details.all()  # Assuming you have a related_name 'details'
         transaction_details = sale.transactions.all()
         
-
         total_paid_amount = transaction_details.aggregate(total_paid=Sum('amount')).get('total_paid') or 0
         total_due_amount = sale.total - total_paid_amount
 
@@ -323,4 +344,6 @@ def transactionIndex(request):
 
     return render(request, 'dashboard/pages/transaction/index.html', {
         'transactions_data': transactions_data,
+        'page_obj': page_obj,
+        'search_query': search_query
     })
