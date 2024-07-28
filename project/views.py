@@ -14,6 +14,7 @@ from django.utils import timezone
 from product.models import *
 
 
+
 def index(request):
     if request.method == 'POST':
         username = request.POST.get('username')

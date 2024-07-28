@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Sum
 # Create your views here.
 
+@login_required
 def studentIndex(request):
     search_query = request.GET.get('search', '')  # Get search query or default to empty string
 
@@ -26,7 +27,7 @@ def studentIndex(request):
 
     return render(request, 'dashboard/pages/students/index.html', context)
 
-
+@login_required
 def viewStudent(request, id):
     customer = Customer.objects.get(id=id)
     raw_sells_data = customer.sales.all()
@@ -58,6 +59,7 @@ def viewStudent(request, id):
 
     return render(request, 'dashboard/pages/students/view.html', context)
 
+@login_required
 def viewClient(request, id):
     client = Customer.objects.get(id=id)
     raw_client_sells_data = client.sales.all()
@@ -89,7 +91,7 @@ def viewClient(request, id):
     return render(request, 'dashboard/pages/clients/view.html', context)
 
 
-
+@login_required
 def clientIndex(request):
     clients = Customer.objects.filter(customer_type='client').order_by('-created_at')
     client_search_query = request.GET.get('search', '')
@@ -152,12 +154,14 @@ def addStudent(request):
            messages.error(request, 'An error occurred while saving the student.')
         return redirect('add-student')
     return render(request,'dashboard/pages/students/add.html')
-    
+
+@login_required   
 def editStudent(request,id):
     editStudents =  get_object_or_404(Customer, customer_type='student', id=id)
     return render(request, 'dashboard/pages/students/edit.html', {'editStudent': editStudents})
 
 
+@login_required
 def updateStudent(request, id):
     updateStudent = get_object_or_404(Customer, customer_type='student', id=id)
 
@@ -192,12 +196,13 @@ def updateStudent(request, id):
     return render(request, 'dashboard/pages/students/edit.html', {'student': updateStudent})
 
 @require_POST
+@login_required
 def deleteStudent(request, id):
     deleteStudent = get_object_or_404(Customer, id=id)
     deleteStudent.delete()
     return redirect('student-index')
 
-
+@login_required
 def addClient(request):
     if request.method == 'POST':
         try:
@@ -240,10 +245,12 @@ def addClient(request):
     return render(request,'dashboard/pages/clients/add.html')
 
 
+@login_required
 def editClient(request,id):
     editClients = get_object_or_404(Customer, customer_type='client', id=id)
     return render(request, 'dashboard/pages/clients/edit.html', {'editClient': editClients})
 
+@login_required
 def updateClient(request, id):
     updateClient = get_object_or_404(Customer, customer_type='client', id=id) 
 
@@ -276,7 +283,7 @@ def updateClient(request, id):
 
     return render(request, 'dashboard/pages/clients/edit.html', {'updateClients': updateClient})
 
-
+@login_required
 def deleteClient(request, id):
     deleteClient = Customer.objects.get(id=id)
     deleteClient.delete()

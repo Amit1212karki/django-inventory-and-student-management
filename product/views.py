@@ -22,6 +22,8 @@ def index(request):
     context = {'products': page_obj, 'search_query': product_search_query}
     return render(request,'dashboard/pages/products/index.html', context)
 
+
+@login_required
 def addProduct(request):
     if request.method == 'POST':
         workspace_id = 1
@@ -52,12 +54,12 @@ def addProduct(request):
        
     return render(request,'dashboard/pages/products/add.html')
 
-
+@login_required
 def editProduct(request,id):
     editProducts = get_object_or_404(Product, id=id)
     return render(request, 'dashboard/pages/products/edit.html', {'editProduct': editProducts})
 
-
+@login_required
 def updateProduct(request, id):
     updateProduct = get_object_or_404(Product, id=id)
 
@@ -83,6 +85,7 @@ def updateProduct(request, id):
      
     return render(request, 'dashboard/pages/products/edit.html', {'updateProducts': updateProduct}) 
 
+@login_required
 def deleteProduct(request, id):
     if request.method == 'POST':
         deleteProduct = get_object_or_404(Product, id=id)
