@@ -9,7 +9,8 @@
 
 <div class="w-full bg-white p-8 rounded-lg shadow-lg">
     <h1 class="text-2xl font-semibold mb-6">Edit Student Record</h1>
-    <form action="{% url 'update-student' editStudent.id %}" method="POST" class="space-y-6" enctype="multipart/form-data">
+    <form action="{% url 'update-student' editStudent.id %}" method="POST" class="space-y-6"
+        enctype="multipart/form-data">
         {% csrf_token %}
         <div class="grid grid-cols-2 gap-4">
             <div>
@@ -30,7 +31,7 @@
             </div>
             <div>
                 <label for="profile_image" class="block text-sm font-medium text-gray-700">Profile Image</label>
-                <input type="file" name="profile_image" value="{{ editStudent.profile_image }}" id="profile_image" 
+                <input type="file" name="profile_image" value="{{ editStudent.profile_image }}" id="profile_image"
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'profile_image' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.profile_image }}</p>
@@ -46,7 +47,8 @@
             </div>
             <div>
                 <label for="date-of-birth" class="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" name="date_of_birth" value="{{ editStudent.date_of_birth|date:"Y-m-d" }}" id="date-of-birth" 
+                <input type="date" name="date_of_birth" value="{{ editStudent.date_of_birth|date:" Y-m-d" }}"
+                    id="date-of-birth"
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'date_of_birth' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.date_of_birth }}</p>
@@ -57,9 +59,9 @@
                 <select name="gender" value="{{ editStudent.gender }}" id="gender" required
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                     <option value="" disabled>Select your gender</option>
-                    <option value="M" {% if editStudent.gender == 'M' %}selected{% endif %}>Male</option>
-                    <option value="F" {% if editStudent.gender == 'F' %}selected{% endif %}>Female</option>
-                    <option value="O" {% if editStudent.gender == 'O' %}selected{% endif %}>Other</option>
+                    <option value="M" {% if editStudent.gender=='M' %}selected{% endif %}>Male</option>
+                    <option value="F" {% if editStudent.gender=='F' %}selected{% endif %}>Female</option>
+                    <option value="O" {% if editStudent.gender=='O' %}selected{% endif %}>Other</option>
                 </select>
                 {% if 'gender' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.gender }}</p>
@@ -91,7 +93,8 @@
             </div>
             <div>
                 <label for="parents phone" class="block text-sm font-medium text-gray-700">Parents Phone Number</label>
-                <input type="tel" name="parents_phone" value="{{ editStudent.parents_phone_no }}" id="parents_phone" required
+                <input type="tel" name="parents_phone" value="{{ editStudent.parents_phone_no }}" id="parents_phone"
+                    required
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'parents_phone' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.parents_phone }}</p>
@@ -99,7 +102,7 @@
             </div>
             <div>
                 <label for="legal_document" class="block text-sm font-medium text-gray-700">Document</label>
-                <input type="file" name="legal_document"value="{{ editStudent.legal_document }}" id="legal_document" 
+                <input type="file" name="legal_document" value="{{ editStudent.legal_document }}" id="legal_document"
                     class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
                 {% if 'legal_document' in form.errors %}
                 <p class="text-red-500 text-sm">{{ form.errors.legal_document }}</p>
