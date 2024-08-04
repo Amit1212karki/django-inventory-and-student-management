@@ -143,3 +143,6 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'billings@hunchhadigital.com.np'  
 EMAIL_HOST_PASSWORD = 'Ultimate@22'  
 DEFAULT_FROM_EMAIL = 'billings@hunchhadigital.com.np'  
+
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'

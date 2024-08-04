@@ -17,25 +17,25 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 # Create your views here.
 
+
 @login_required
 def index(request):
-    sales_search_query = request.GET.get('search','')
-    sales_list = Sales.objects.all().order_by('-created_at')
-    if sales_search_query:
-        filtered_sales = sales_list.filter(
-            Q(customer__first_name__icontains=sales_search_query) |
-            Q(customer__last_name__icontains=sales_search_query)
-        )
-    else:
-        filtered_sales = sales_list
-
-    paginator = Paginator(filtered_sales, 10)
+    search_query = request.GET.get('search', '')
+    sales_queryset = Sales.objects.all().order_by('-created_at')
+    
+    if search_query:
+        search_words = search_query.split()
+        q_object = Q()
+        for word in search_words:
+            q_object |= Q(customer__first_name__icontains=word) | Q(customer__last_name__icontains=word) | Q(customer__customer_type__icontains=word)
+        sales_queryset = sales_queryset.filter(q_object)
+    
+    paginator = Paginator(sales_queryset, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     sales_data = []
 
-    
-    for sales in filtered_sales:
+    for sales in page_obj:
         total_transactions = sales.transactions.aggregate(Sum('amount'))['amount__sum'] or 0
         pending_payment = sales.total - total_transactions
         sales_data.append({
@@ -43,8 +43,8 @@ def index(request):
             'total_transactions': total_transactions,
             'pending_payment': pending_payment
         })
-        context = {'sales_data': sales_data, 'page_obj': page_obj, 'search_query': sales_search_query}
 
+    context = {'sales_data': sales_data, 'page_obj': page_obj, 'search_query': search_query}
     return render(request, 'dashboard/pages/sales/index.html', context)
 
 
