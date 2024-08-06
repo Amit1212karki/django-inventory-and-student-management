@@ -312,14 +312,16 @@ def delete_sales(request, sales_id):
 @login_required
 def transactionIndex(request):
     search_query = request.GET.get('search', '')
-    sales_queryset = Sales.objects.all()
+    
+    # Filter sales to include only those with transactions
+    sales_queryset = Sales.objects.filter(transactions__isnull=False).distinct()
 
     if search_query:
         sales_queryset = sales_queryset.filter(
             Q(customer__first_name__icontains=search_query) |
             Q(customer__last_name__icontains=search_query) |
             Q(customer__customer_type__icontains=search_query)
-        )
+        ).distinct()
 
     paginator = Paginator(sales_queryset, 10)  # 10 items per page
     page_number = request.GET.get('page')

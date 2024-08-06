@@ -8,7 +8,6 @@ from collections import OrderedDict
 import calendar
 import json
 from decimal import Decimal
-import datetime
 from datetime import timedelta
 from django.utils import timezone
 from product.models import *
@@ -117,7 +116,7 @@ def dashboard(request):
         'transaction_data': transaction_data_json_str, 
         'top_products_data' : top_products_data_json,
         'new_customers' : new_customers_count,
-         'inventory_product' : low_inventory_products,
+        'inventory_product' : low_inventory_products,
     }
 
     return render(request, 'dashboard/pages/index.html', context)
