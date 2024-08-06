@@ -308,38 +308,37 @@ def delete_sales(request, sales_id):
     
     return redirect('sales-index')
 
-
 @login_required
 def transactionIndex(request):
     search_query = request.GET.get('search', '')
-    
-    # Filter sales to include only those with transactions
-    sales_queryset = Sales.objects.filter(transactions__isnull=False).distinct()
+
+    # Filter transactions based on search query related to sales and customer details
+    transaction_queryset = Transaction.objects.all()
 
     if search_query:
-        sales_queryset = sales_queryset.filter(
-            Q(customer__first_name__icontains=search_query) |
-            Q(customer__last_name__icontains=search_query) |
-            Q(customer__customer_type__icontains=search_query)
+        transaction_queryset = transaction_queryset.filter(
+            Q(sales__customer__first_name__icontains=search_query) |
+            Q(sales__customer__last_name__icontains=search_query) |
+            Q(sales__customer__customer_type__icontains=search_query)
         ).distinct()
 
-    paginator = Paginator(sales_queryset, 10)  # 10 items per page
+    paginator = Paginator(transaction_queryset, 10)  # 10 items per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     transactions_data = []
 
-    for sale in page_obj:
+    for transaction in page_obj:
+        sale = transaction.sales
         sales_details = sale.details.all()  # Assuming you have a related_name 'details'
-        transaction_details = sale.transactions.all()
         
-        total_paid_amount = transaction_details.aggregate(total_paid=Sum('amount')).get('total_paid') or 0
+        total_paid_amount = sale.transactions.aggregate(total_paid=Sum('amount')).get('total_paid') or 0
         total_due_amount = sale.total - total_paid_amount
 
         transactions_data.append({
+            'transaction': transaction,
             'sale': sale,
             'sales_details': sales_details,
-            'transaction_details': transaction_details,
             'total_paid_amount': total_paid_amount,
             'total_due_amount': total_due_amount
         })
