@@ -18,9 +18,4 @@ urlpatterns = [
     path('delete-clients-record/<int:id>/', deleteClient, name='delete-client'),
     path('view-client-record/<int:id>/', viewClient, name='view-client'),
 
-
-
-
-
-
 ]
