@@ -58,10 +58,10 @@
                     {{ product.name }}
                 </th>
                 <td class="px-6 py-4">
-                {% if product.inventory_count is not None %}
-                    {{ product.inventory_count }}
+                {% if product.inventory_count and product.inventory_count > 0 %}
+                    {{ product.inventory_count }} item is in stock.
                 {% else %}
-                    Inventory is Empty
+                Sorry, this item is out of stock.
                 {% endif %}
                 </td>
             </tr>

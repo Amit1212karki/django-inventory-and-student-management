@@ -90,19 +90,40 @@ def store_sales_data(request):
             vat_amount=vat_amount
         )
         
+
         # Save SalesDetail objects
         for detail in sales_details:
+            product_id = detail.get('product_id')
+            quantity = detail.get('quantity')
+            price = detail.get('price')
+            total = detail.get('total')
+            product = Product.objects.get(id=product_id)
+            if product.inventory_count < quantity:
+                return JsonResponse(
+                    {'error': f"Insufficient inventory for product ID {product_id}. Available: {product.inventory_count}, Requested: {quantity}"},
+                    status=400
+                )
             SalesDetail.objects.create(
                 sales=sales,
-                product_id=detail.get('product_id'),
-                quantity=detail.get('quantity'),
-                price=detail.get('price'),
-                total=detail.get('total')
+                product_id=product_id,
+                quantity=quantity,
+                price=price,
+                total=total
             )
+            
+            product.inventory_count -= quantity
+            
+            # Ensure inventory count doesn't go below zero (optional, but good practice)
+            if product.inventory_count < 0:
+                product.inventory_count = 0
+            
+            # Save the updated product
+            product.save()
         
-        return JsonResponse({'message': 'Sales data saved successfully','sales_id': sales.id}, status=200)
+        return JsonResponse({'message': 'Sales data saved successfully', 'sales_id': sales.id}, status=200)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 
 
 @login_required

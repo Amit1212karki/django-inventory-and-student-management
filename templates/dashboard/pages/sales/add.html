@@ -22,7 +22,7 @@
             <p class="text-red-500 text-sm">{{ form.errors.customer }}</p>
           {% endif %}
         </div>
-        <div>
+        <div class="w-44 sm:w-44 md:w-44">
           <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
           <input type="date" name="date" id="date" required class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
           {% if 'date' in form.errors %}
@@ -292,6 +292,10 @@
           // Handle error
           console.error(error)
           // Optionally, you can perform additional actions here if the request fails
+          if (error.response && error.response.data.error) {
+                // Display the error message to the user
+                alert(error.response.data.error); // Simple alert, replace with better UI if needed
+            }
         })
         .finally(function () {
           // Hide spinner and enable button

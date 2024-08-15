@@ -22,37 +22,38 @@ def index(request):
     context = {'products': page_obj, 'search_query': product_search_query}
     return render(request,'dashboard/pages/products/index.html', context)
 
-
 @login_required
 def addProduct(request):
     if request.method == 'POST':
-        workspace_id = 1
+        workspace_id = 1  # Assuming you have a workspace_id predefined
         workspace = Workspace.objects.get(pk=workspace_id)
         product_name = request.POST.get('product_name')
         product_price = request.POST.get('product_price')
-        product_image = None if not request.FILES.get('product_image') else request.FILES.get('product_image')
-        product_file = None if not request.FILES.get('product_file') else request.FILES.get('product_file')
-        inventory_count = None if not request.POST.get('inventory_count') else request.POST.get('inventory_count')
-        is_recurring = request.POST.get('isRecurring')
-        recurring_period = request.POST.get('recurringPeriod') if is_recurring == 'True' else None
+        product_image = request.FILES.get('product_image', None)
+        product_file = request.FILES.get('product_file', None)
+        is_stock_required = request.POST.get('isInventory') == 'True'
+        inventory_count = request.POST.get('inventory_count') if is_stock_required else None
+        is_recurring = request.POST.get('isRecurring') == 'True'
+        recurring_period = request.POST.get('recurringPeriod') if is_recurring else None
         description = request.POST.get('description')
 
         product = Product(
             workspace=workspace,
             name=product_name,
             price=product_price,
+            is_stock_required=is_stock_required,
             inventory_count=inventory_count,
-            isrecurring='Y' if is_recurring == 'True' else 'N',
+            isrecurring='Y' if is_recurring else 'N',
             recurring_period=recurring_period,
             description=description,
             image=product_image,
             file=product_file
         )
         product.save()
-        return redirect('add-product') 
+        return redirect('add-product')
 
-       
-    return render(request,'dashboard/pages/products/add.html')
+    return render(request, 'dashboard/pages/products/add.html')
+
 
 @login_required
 def editProduct(request,id):
