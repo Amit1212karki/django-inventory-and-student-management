@@ -108,15 +108,11 @@ def store_sales_data(request):
                         {'error': f"Insufficient inventory for product ID {product_id}. Available: {product.inventory_count}, Requested: {quantity}"},
                         status=400
                     )
-
+                product.inventory_count -= quantity
                
-            product.inventory_count -= quantity
-                
-               
-            if product.inventory_count < 0:
-                product.inventory_count = 0
-
-            product.save()
+                if product.inventory_count < 0:
+                    product.inventory_count = 0
+                    product.save()
            
             SalesDetail.objects.create(
                 sales=sales,
