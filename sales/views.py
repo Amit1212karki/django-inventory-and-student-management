@@ -97,12 +97,27 @@ def store_sales_data(request):
             quantity = detail.get('quantity')
             price = detail.get('price')
             total = detail.get('total')
-            product = Product.objects.get(id=product_id)
-            if product.inventory_count < quantity:
-                return JsonResponse(
-                    {'error': f"Insufficient inventory for product ID {product_id}. Available: {product.inventory_count}, Requested: {quantity}"},
-                    status=400
-                )
+            try:
+                product = Product.objects.get(id=product_id)
+            except Product.DoesNotExist:
+                return JsonResponse({'error': f"Product with ID {product_id} not found."}, status=404)
+
+            if product.is_stock_required == 'Y':  
+                if product.inventory_count < quantity:
+                    return JsonResponse(
+                        {'error': f"Insufficient inventory for product ID {product_id}. Available: {product.inventory_count}, Requested: {quantity}"},
+                        status=400
+                    )
+
+               
+            product.inventory_count -= quantity
+                
+               
+            if product.inventory_count < 0:
+                product.inventory_count = 0
+
+            product.save()
+           
             SalesDetail.objects.create(
                 sales=sales,
                 product_id=product_id,
@@ -110,15 +125,6 @@ def store_sales_data(request):
                 price=price,
                 total=total
             )
-            
-            product.inventory_count -= quantity
-            
-            # Ensure inventory count doesn't go below zero (optional, but good practice)
-            if product.inventory_count < 0:
-                product.inventory_count = 0
-            
-            # Save the updated product
-            product.save()
         
         return JsonResponse({'message': 'Sales data saved successfully', 'sales_id': sales.id}, status=200)
     else:
