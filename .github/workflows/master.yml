@@ -1,0 +1,22 @@
+name: remote ssh command on vps
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: oracle.mysecurecloudserver.com
+        username: hunchhan
+        password: "-xq9f2B9CY[g1F"
+        port: 1980
+        script: |
+          cd ~/billings
+          git pull origin master
+

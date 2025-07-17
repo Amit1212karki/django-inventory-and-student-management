@@ -1,0 +1,303 @@
+<!-- customer/templates/customer/student_index.html -->
+{% extends 'dashboard/layout/main.html' %}
+
+{% block title %}
+{{ block.super }} - Student Details
+{% endblock %}
+
+{% block content %}
+
+<style>
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #bill-container,
+    #bill-container * {
+      visibility: visible;
+    }
+
+    #bill-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+</style>
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold mb-4">Student Details</h1>
+    <!-- Action Buttons -->
+
+  </div>
+  <div id="bill-container" class="p-6 rounded-lg bg-white mb-6">
+    <div class="flex justify-between  mb-6">
+      <div class="flex gap-2">
+        {% if customer.profile_image %}
+        <img src="{{ customer.profile_image.url }}" alt="customer image" class="h-30 w-32 object-contain mb-2">
+        {% else %}
+        <div class="h-30 w-32 bg-gray-200 flex items-center justify-center mb-2">
+          <span class="text-gray-500">No Image</span>
+        </div>
+        {% endif %}
+        <div class="customer-details">
+          <p class="font-bold text-2xl">{{customer.first_name}}{{customer.last_name}}</p>
+          <p>Address: {{customer.address}}</p>
+          <p>Contact No: {{customer.phone}}</p>
+          <p>Email: {{customer.email}}</p>
+          <p>Parents Name: {{customer.parents_name}}</p>
+          <p>Parents Contact No: {{customer.parents_phone_no}}</p>
+        </div>
+      </div>
+      <div class="">
+        <h2 class="text-2xl font-semibold">Created At</h2>
+        <p>{{ customer.created_at }}</p>
+        <hr class="mb-6 w-[60%]">
+        <h2 class="text-2xl font-semibold">Total Receiveable</h2>
+        <p>NPR {{ total_pending_amount }}</p>
+        
+      </div>
+    </div>
+    <!-- Bill Header -->
+
+
+    <!-- Bill Table -->
+    <h1 class="text-2xl font-bold mt-5">Bills</h1>
+    <hr class="mb-6 w-[60%]">
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr class="bg-gray-300">
+          <th class="py-2 px-4 border border-gray-200 text-start">ID</th>
+          <th class="py-2 px-4 border border-gray-200 text-start">Sales Date</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Status</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Total</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Total Transaction</th>
+          <th class="py-2 ps-4 border border-gray-200 text-start">Pending Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detail in sales_data %}
+        <tr>
+          <td class="border px-4 py-2 text-start"> <a href="/sales/view-sales-invoice/{{detail.sales.id}}"
+              class="text-blue-500 hover:text-blue-600">{{ detail.sales.id }}</a></td>
+          <td class="border px-4 py-2 text-start">{{ detail.sales.sales_date }}</td>
+          <td class="border px-4 py-2">{{ detail.sales.status }}</td>
+          <td class="border px-4 py-2">{{ detail.sales.total }}</td>
+          <td class="border px-4 py-2">{{ detail.total_transactions }}</td>
+          <td class="border px-4 py-2">{{ detail.pending_payment }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Bill Summary -->
+
+    <div class="my-5"></div>
+    <!-- transaction summary -->
+    <h1 class="text-2xl font-bold mt-5">Payments</h1>
+    <hr class="mb-6 w-[60%]">
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr class="bg-gray-300">
+          <th class="text-start border border-gray-200 px-3 py-2">Date</th>
+          <th class="text-start border border-gray-200 px-3 py-2">Amount</th>
+          <th class="text-start border border-gray-200 px-3 py-2">Payment Method</th>
+          <th class="text-start border border-gray-200 px-3 py-2">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in transaction_data %}
+        <tr>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.transaction_date|date:"Y-m-d" }}</td>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.amount }}</td>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.payment_method }}</td>
+          <td class="text-start border border-gray-200 px-3 py-2">{{ transaction.notes }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <!-- Transaction Form -->
+  <div id="transaction-form" class="hidden">
+    <h2 class="text-xl font-semibold mb-2">Record Transaction</h2>
+    <form id="transaction-form-content" class="bg-white p-4 rounded-lg shadow-md" action="#">
+      <div class="mb-4">
+        <label for="transaction-amount" class="block text-gray-700 text-sm font-bold mb-2">Transaction Amount:</label>
+        <input type="text" id="transaction-amount" name="transaction-amount"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+      </div>
+      <div class="mb-4">
+        <label for="transaction-date" class="block text-gray-700 text-sm font-bold mb-2">Transaction Date:</label>
+        <input type="date" id="transaction-date" name="transaction-date"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+      </div>
+      <div class="mb-4">
+        <label for="transaction-payment-method" class="block text-gray-700 text-sm font-bold mb-2">Payment
+          Method:</label>
+        <select id="transaction-payment-method" name="transaction-payment-method"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option value="cash">Cash</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="transaction-notes" class="block text-gray-700 text-sm font-bold mb-2">Notes:</label>
+        <textarea id="transaction-notes" name="transaction-notes"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+      </div>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Save
+        Transaction</button>
+    </form>
+  </div>
+
+</div>
+
+
+<script>
+  document.getElementById('print-button').addEventListener('click', function () {
+    window.print()
+  })
+
+  document.getElementById('export-button').addEventListener('click', function () {
+    exportPDF()
+  })
+
+  document.getElementById('send-button').addEventListener('click', function () {
+    sendBill()
+  })
+
+  document.getElementById('transaction-form-content').addEventListener('submit', function (event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Call the saveTransaction function to handle the form submission
+    saveTransaction();
+  });
+
+  document.getElementById('record-transaction-button').addEventListener('click', function () {
+    let form = document.getElementById('transaction-form')
+    form.classList.toggle('hidden')
+  })
+
+  function exportPDF() {
+    // Create a new jsPDF instance with landscape orientation
+    const doc = new jsPDF('portrait');
+
+    // Get the width and height of the A4 paper
+    const a4Width = 210; // A4 width in mm
+    const a4Height = 200; // A4 height in mm
+
+    // Get the width and height of the bill container
+    const billContainerWidth = document.getElementById('bill-container').offsetWidth;
+    const billContainerHeight = document.getElementById('bill-container').offsetHeight;
+
+    // Calculate the scale factor to fit the content within the A4 paper
+    const scaleFactor = a4Width / billContainerWidth;
+
+    // Calculate the scaled height of the bill container
+    const scaledHeight = billContainerHeight * scaleFactor;
+
+    // Convert HTML to canvas
+    html2canvas(document.getElementById('bill-container')).then(function (canvas) {
+      // Add canvas to PDF, scaling it to fit the A4 paper width
+      const imgData = canvas.toDataURL('image/png');
+      doc.addImage(imgData, 'PNG', 0, 0, a4Width, scaledHeight);
+
+      // Save the PDF
+      doc.save('bill.pdf');
+    });
+  }
+
+
+  function sendBill() {
+    const sendButton = document.getElementById('send-button');
+    const spinner = document.getElementById('spinner');
+    const buttonText = document.getElementById('button-text');
+
+    // Show spinner loader and hide button text
+    spinner.classList.remove('hidden');
+    buttonText.classList.add('hidden');
+    sendButton.disabled = true;
+
+    // Get the customer's email
+    const customerEmail = "{{ sales.customer.email }}";
+    const sales_id = "{{ sales.id }}";
+
+    // Prepare the data to send
+    let data = {
+      sales_id: sales_id,
+      email: customerEmail
+    };
+
+    // Send the sales_id to the Django backend
+    axios.post('/sales/send-bill/', data)
+      .then(function (response) {
+        console.log(response.data);
+        console.log('Request sent successfully');
+
+        // Hide spinner loader, show button text, and enable button
+        spinner.classList.add('hidden');
+        buttonText.classList.remove('hidden');
+        sendButton.disabled = false;
+
+        // Show success toast message
+        showToast('Bill sent successfully');
+      })
+      .catch(function (error) {
+        console.error('Error sending request:', error);
+
+        // Hide spinner loader, show button text, and enable button
+        spinner.classList.add('hidden');
+        buttonText.classList.remove('hidden');
+        sendButton.disabled = false;
+
+        // Show error toast message
+        showToast('Error sending bill. Please try again later.', 'error');
+      });
+  }
+
+  function showToast(message, type = 'success') {
+    // You can implement your toast message display logic here
+    alert(message);
+    window.location.reload()
+  }
+
+
+  function saveTransaction() {
+    // Get form data
+    const transactionAmount = document.getElementById('transaction-amount').value;
+    const transactionDate = document.getElementById('transaction-date').value;
+    const paymentMethod = document.getElementById('transaction-payment-method').value;
+    const transactionNotes = document.getElementById('transaction-notes').value;
+
+    // Create data object
+    const data = {
+      transaction_amount: transactionAmount,
+      transaction_date: transactionDate,
+      payment_method: paymentMethod,
+      transaction_notes: transactionNotes
+    };
+
+    // Send data to Django backend using Axios
+    axios.post('/sales/save-transaction/{{ sales.id }}', data)
+      .then(function (response) {
+        console.log('Transaction saved successfully:', response.data);
+        // Optionally, perform any actions after successful submission
+        window.location.reload()
+      })
+      .catch(function (error) {
+        console.error('Error saving transaction:', error);
+        // Optionally, handle errors or display an error message to the user
+      });
+  }
+
+</script>
+
+{% endblock %}

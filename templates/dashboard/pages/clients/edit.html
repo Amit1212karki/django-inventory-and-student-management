@@ -1,0 +1,89 @@
+{% extends 'dashboard/layout/main.html' %}
+
+{% block title %}
+{{ block.super }} - Index
+{% endblock %}
+
+{% block content %}
+<div class="w-full bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-semibold mb-6">Create Clients Record</h1>
+    <form action="{% url 'update-client' editClient.id %}" method="POST" class="space-y-6" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
+                <input type="text" name="first_name" value="{{ editClient.first_name }}" id="first-name" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'first_name' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.first_name }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                <input type="text" name="last_name" value="{{ editClient.last_name }}" id="last-name" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'last_name' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.last_name }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" value="{{ editClient.email }}"  id="email" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'email' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.email }}</p>
+                {% endif %}
+            </div>
+            
+          
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" name="phone" value="{{ editClient.phone }}" id="phone" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'phone' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.phone }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                <input name="address" value="{{ editClient.address }}" id="address" rows="3" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                {% if 'address' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.address }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Bussiness</label>
+                <input name="company" value="{{ editClient.company }}" id="company" rows="3" required
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm" />
+                {% if 'company' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.company }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="panno" class="block text-sm font-medium text-gray-700">VAT/PAN No</label>
+                <input type="number" value="{{ editClient.vat_pan_no }}" name="panno" id="panno" 
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'panno' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.panno }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="legal_document" class="block text-sm font-medium text-gray-700">Document</label>
+                <input type="file" value="{{ editClient.legal_document }}" name="legal_document" id="legal_document" 
+                    class="mt-1 block py-2 px-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 sm:text-sm">
+                {% if 'legal_document' in form.errors %}
+                <p class="text-red-500 text-sm">{{ form.errors.legal_document }}</p>
+                {% endif %}
+            </div>
+            
+        </div>
+        <div class="flex justify-end">
+            <button type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
