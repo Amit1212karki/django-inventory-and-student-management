@@ -1,0 +1,21 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+env/
+venv/
+
+# Django specific
+db.sqlite3
+media/
+staticfile/
+static/
+*.log
+
+# Environment variables
+.env
+
+# IDE specific
+.idea/
+.vscode/
