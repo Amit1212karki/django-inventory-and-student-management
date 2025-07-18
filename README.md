@@ -1,0 +1,1 @@
+# django-inventory-and-student-management
